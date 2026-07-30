@@ -2,21 +2,10 @@
 % Please edit documentation in R/ingest.R
 \name{ingest}
 \alias{ingest}
-\title{Initialize}
+\title{Ingest data: Prepare for analysis}
 \usage{
-ingest(data, vars, id, group, params)
-}
-\arguments{
-\item{data}{Data to digest.}
-
-\item{vars}{Columns to analyse.}
-
-\item{id}{A set of columns that uniquely identify each observation.}
-
-\item{group}{A set of columns used to group observations}
-
-\item{params}{A set of parameters for the analysis}
+ingest(gourmex, data)
 }
 \description{
-Initialize
+Ingest data: Prepare for analysis
 }

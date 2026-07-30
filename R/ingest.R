@@ -1,21 +1,25 @@
-#' Initialize
+#' Ingest data: Prepare for analysis
 #'
-#' @param data Data to digest.
-#' @param vars Columns to analyse.
-#' @param id A set of columns that uniquely identify each observation.
-#' @param group A set of columns used to group observations
-#' @param params A set of parameters for the analysis
+#' @param gourmex
+#' @param data
 #'
-#' @import dplyr
+#' @returns
 #' @export
 #'
-ingest = function(data, vars, id, group, params=NULL){
-  yum = list()
-  class(yum) = 'yum'
+#' @examples
+ingest = function(gourmex, data){
+  gourmex = gourmex %>%
+    introduce(data) %>%
+    swallow()
 
-  yum$data = data
+  return(gourmex)
+}
 
-  yum$vars = tibble(var=vars) %>%
+
+introduce = function(gourmex, data){
+  gourmex$storage$raw = data
+
+  gourmex$types = tibble(var=gourmex$params$vars) %>%
     rowwise() %>%
     mutate(
       var_type = case_when(
@@ -25,12 +29,109 @@ ingest = function(data, vars, id, group, params=NULL){
     ) %>%
     ungroup()
 
-  yum$params$id = data %>% select(any_of({{id}})) %>% names()
-  yum$params$group = data %>% select(any_of({{group}})) %>% names() # to rename ?
-  # yum$params$strata_var = df %>% select({{strata_var}}) %>% names() # to rename ?
-  yum$params$stats = params$stats
-  yum$params$formats = params$formats
-  yum$params$layout = params$layout
-
-  return(yum)
+  return(gourmex)
 }
+
+
+swallow = function(gourmex){
+  gourmex$storage$chewed = list()
+  gourmex$storage$stats = list()
+
+  # Treat each variable independently
+  for(var in gourmex$params$vars){
+    chewed = chew(gourmex, var) # W1.1
+    gourmex$storage$chewed[[var]] = chewed$chewed # W2.1
+    gourmex$storage$stats[[var]] = chewed$stats # W2.1
+  }
+
+  return(gourmex)
+}
+
+
+#' W1.1 Chewing step: Data preparation before aggregationyum
+#'
+#' @param df
+#' @param var
+#'
+#' @return
+#' @import dplyr tidyr
+#'
+#' @examples
+# prepare_var = function(df, var, id_cols, by=NULL, var_type='auto', levels=NULL, default=NULL){
+chew = function(gourmex, var){
+  # Rewrite unnest
+  unnest = function(data, ...){
+    new_data = tidyr::unnest(data, ...) %>% dplyr_reconstruct(data)
+    return(new_data)
+  }
+
+  id_cols = gourmex$params$id_cols
+  group_cols = gourmex$params$group_cols
+
+  # Simplify dataframe
+  chewed = gourmex$storage$raw %>%
+    select(all_of(c(id_cols, group_cols, var))) %>%
+    distinct()
+
+  if(!is.null(group_cols)){
+    chewed = chewed %>% mutate(across(all_of(group_cols), factor))
+  }
+
+  # W1.1.1: Get variable type (numerical, categorical or logical)
+  var_type = gourmex$types %>% filter(var == .env$var) %>% pull(var_type)
+
+  # W1.1.2: For categorial and logical
+  if(var_type != 'numerical'){
+    # Process lists
+    if(is.list(chewed[[var]])){
+      chewed = chewed %>%
+        unnest(!!sym(var), keep_empty = T)  %>%
+
+        # Remove nans unless an individual has NAs only
+        group_by(across(all_of(id_cols))) %>%
+        mutate(all_na = all(is.na(.data[[var]]))) %>%
+        ungroup() %>%
+        filter(!is.na(.data[[var]]) | all_na) %>%
+        select(-all_na) %>%
+        distinct()
+
+      # Simplify dataframe
+      chewed = chewed %>%
+        select(all_of(c(id_cols, var, group_cols))) %>%
+        distinct()
+    }
+
+    # Reorder levels for factors
+    if(!is.factor(chewed[[var]])){
+      levels = sort(unique(chewed[[var]]), na.last=T)
+      if(var_type == 'logical')
+        levels = c(TRUE, FALSE)
+      # Factor -> Character
+      chewed = chewed %>%
+        mutate(!!var := factor(.data[[var]], levels = as.character(levels), exclude=NULL)) %>%
+        arrange(!!sym(var))
+    }
+
+    # W1.1.3
+    stats = chewed %>%
+      select(all_of(c(group_cols, var))) %>%
+      distinct() %>%
+      # rename(level=.data[[var]]) %>%
+      complete(!!sym(var), !!!syms(group_cols)) %>%
+      mutate(!!var := factor(.data[[var]], levels = na.omit(levels(.data[[var]]))))
+
+    # W1.1.4
+    chewed = chewed %>%
+      mutate(!!var := factor(.data[[var]], levels = na.omit(levels(.data[[var]]))))
+  }
+  else{
+    # W1.1.3
+    stats = chewed %>% select(all_of(group_cols)) %>% distinct()
+  }
+
+  return(list(
+    'chewed' = chewed,
+    'stats' = stats
+  ))
+}
+
