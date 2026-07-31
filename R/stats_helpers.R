@@ -113,23 +113,6 @@ stat_n_avail = function(gourmex, var, stat_name="n_avail", by=NULL, keep_na_rows
     summarize(!!stat_name := sum(is_avail)) %>%
     ungroup()
 
-  # # Extend
-  # if(is.null(by))
-  #   df_stat = cbind(df_stat, df_stat)
-  # else
-  #   df_stat = df_stat %>% left_join(df_stat, by=by) # %>% replace_na(list(0) %>% setNames(stat_name))
-  #
-  # # Remove NAs
-  # if(!keep_na_rows){
-  #   if(var_type != 'numerical')
-  #     df_stat = df_stat %>% filter(!is.na(.data[[var]]))
-  # }
-  #
-  # # Assign (W2.2.2)
-  # gourmex$storage$stats[[var]] = df_stat
-  # # df = df %>% restore_attributes(attrs)
-  # return(gourmex)
-
   return(df_stat)
 }
 

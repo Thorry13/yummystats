@@ -43,17 +43,13 @@ group_expr = expr(gourmex$params$group_cols)
 strata_expr = expr(gourmex$params$strata)
 stat_funcs_cat = list(
   N = expr(\(...) stat_total(..., by=eval(strata_expr))),
-  n_avail = expr(\(...) stat_n_avail(..., by=eval(strata_expr))), # NA rows aren't removed to allow stat_n_miss working later
-  # n_level = \(...) stat_total(..., new_col='n_level', by= c('level'=attr(..., 'var'), eval(strata_expr))),
+  n_avail = expr(\(...) stat_n_avail(..., by=eval(strata_expr))),
   n_level = expr(\(...) stat_total(..., by= c(var, eval(strata_expr)))),
   n_missing = expr(stat_n_miss),
-  # n_missing = \(...) add_n_miss(..., keep_na_rows = F),
-  # p = expr(\(...) stat_perc(..., denominator_col = 'N')),
   p_level = expr(\(...) stat_perc(..., numerator_col = 'n_level', denominator_col = 'n_avail', by=eval(strata_expr)))
   )
 
 stat_funcs_cat_by = list(
-  # n = \(...) stat_total(..., new_col = 'n', by=c('level'=attr(..., 'var'), by, eval(strata_expr))),
   N_group = expr(\(...) stat_total(..., by=c(eval(group_expr), eval(strata_expr)))),
   n_avail_group = expr(\(...) stat_n_avail(..., by=c(eval(group_expr), eval(strata_expr)))),
   n_level_group = expr(\(...) stat_total(..., by=c(var, eval(group_expr), eval(strata_expr)))),
