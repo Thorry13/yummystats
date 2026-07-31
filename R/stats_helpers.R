@@ -11,7 +11,6 @@
 stat_total = function(gourmex, var, stat_name='N', by=NULL){
   # check_report_df(df)
   df_chewed = gourmex$storage$chewed[[var]]
-  # df_stat = gourmex$storage$stats[[var]]
 
   # Calculate total
   df_stat = df_chewed %>%
@@ -21,19 +20,6 @@ stat_total = function(gourmex, var, stat_name='N', by=NULL){
     group_by(across(all_of(unname(by)))) %>%
     summarize(!!stat_name := n_distinct(unity_id)) %>%
     ungroup()
-
-  # # Extend
-  # if(is.null(by))
-  #   df_stat = df_stat %>% cbind(df_total)
-  # else
-  #   df_stat = df_stat %>% left_join(df_total, by=by) %>% replace_na(list(0) %>% setNames(stat_name))
-
-  # # Assign (W2.2.2)
-  # gourmex$storage$stats[[var]] = df_stat
-
-  # # Convert back to report_df. This deals with group_by and ungroup issues.
-  # # Upcoming changes on S3 methods to clean it up
-  # df = df %>% restore_attributes(attrs)
 
   return(df_stat)
 }
@@ -175,6 +161,7 @@ mychisq_test = function(vals, groups){
   return(p)
 }
 
+#' @import rstatix
 myanova_test = function(data, f){
   res_anova = anova_test(data, f)
   if(is_grouped_df(data))
@@ -200,21 +187,22 @@ stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NU
   id_cols = gourmex$params$id_cols
   # strata_var = gourmex$params$strata_var
 
+  # Filter nans
+  inputs_filtered = df_chewed %>% filter(!is.na(.data[[var]])) # %>% distinct() # Why distinct ?
+
   if(!is.null(by)){
-    # df_by = df_stat %>% group_by(across(all_of(by))) %>% summarize(id_ = as.character(cur_group_id())) %>% ungroup()
-    # df_stat = df_stat %>% left_join(df_by, by=by)
-    # df_chewed = df_chewed %>% inner_join(df_stat %>% select(all_of(by), id_) %>% distinct(), by=by)
-    df_by = df_chewed %>% group_by(across(all_of(by))) %>% summarize(id_ = as.character(cur_group_id())) %>% ungroup()
-    df_chewed = df_chewed %>% left_join(df_by, by=by)
+    inputs_filtered = inputs_filtered %>% filter(!is.na(.data[[by]]))
+    df_by = inputs_filtered %>%
+      group_by(across(all_of(by))) %>%
+      summarize(id_ = as.character(cur_group_id())) %>% ungroup()
+    # Display warning ?
+    inputs_filtered = inputs_filtered %>% left_join(df_by, by=by)
   }
 
   # No within groups tests for the moment
   # if(is.null(by) || n_distinct(df$id_) < 2)
   else
     stop("Only \"between groups\" tests for significance are currently supported. Please provide a `by` argument containing at least two levels.")
-
-  # Filter nans
-  inputs_filtered = df_chewed %>% filter(!is.na(.data[[var]])) # %>% distinct() # Why distinct ?
 
   if(var_type %in% c('categorical', 'logical')){
     # attr(df_stat, 'p_test') = 'X²-test' # Set testing method as a parameter
@@ -225,21 +213,12 @@ stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NU
 
     if(!pval_per_level){
       # Calculate p-value
-      # if(n_distinct(inputs_filtered$id_) > 1 & n_distinct(inputs_filtered[[input_var]]) > 1)
-      #   p = chisq.test(as.factor(inputs_filtered[[input_var]]), as.factor(inputs_filtered$id_), correct = F)$p.value
-      # else
-      #   p = as.numeric(NA)
       df_stat = inputs_filtered %>%
         # select() %>%
         # distinct() %>%
         group_by(across(all_of(strata_var))) %>%
         summarize(!!stat_name := mychisq_test(.data[[var]], id_)) %>%
         ungroup()
-
-      # if(is.null(strata_var))
-      #   df_stat = df_stat %>% cbind(df_stat)
-      # else
-      #   df_stat = df_stat %>% left_join(df_stat, by=strata_var) # %>% replace_na(list(0) %>% setNames(stat_name))
     }
 
     # Else each level is considered as an independent variable
@@ -250,17 +229,10 @@ stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NU
         df_stat = inputs_filtered %>%
           mutate(V = TRUE) %>%
           pivot_wider(names_from = all_of(var), values_from=V, names_sort = T) %>% # Pivoting to convert level as a logical variable
-          mutate(across(-all_of(c(by, id_cols, 'id_')), ~replace_na(.x, FALSE))) %>%
+          mutate(across(-all_of(c(by, id_cols, 'id_', strata_var)), ~replace_na(.x, FALSE))) %>%
           group_by(across(all_of(strata_var))) %>%
           summarize(across(-all_of(c(id_cols, by, 'id_')),
-                           function(X){
-                             # if(n_distinct(X) > 1)
-                             #   return(chisq.test(as.factor(X), as.factor(.data[['id_']]), correct = F)$p.value) # Test as a parameter
-                             # else
-                             #   return(NA)
-                             mychisq_test(X, .data[['id_']])
-                           }
-          )) %>%
+                           function(X) {mychisq_test(X, .data[['id_']])})) %>%
           ungroup() %>%
 
           # Reshape back
@@ -270,12 +242,6 @@ stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NU
         df_stat = df_stat %>%
           mutate(!!var := factor(!!sym(var), levels = levels(inputs_filtered[[var]]))) %>%
           complete(!!sym(var), fill = list(value=NA))
-
-        # Extend
-        # if(is.null(strata))
-        #   df = df %>% cbind(df_stat)
-        # else
-        # df_stat = df_stat %>% left_join(df_stat, by=c(var, strata_var))
       }
       else
         # df_stat[[stat_name]] = as.numeric(NA)
@@ -286,7 +252,7 @@ stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NU
   # Compare means for numerical stats
   else if(var_type == 'numerical'){
     f = sprintf('%s ~ id_', var)
-    if(n_distinct(df_chewed$id_) == 2 & min(table(df_chewed$id_)) > 1){
+    if(n_distinct(inputs_filtered$id_) == 2 & min(table(inputs_filtered$id_)) > 1){
       df_stat = inputs_filtered %>%
         group_by(across(all_of(strata_var))) %>%
         summarize(!!stat_name := t.test(.data[[var]]~ as.numeric(id_))$p.value) %>%
@@ -295,7 +261,7 @@ stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NU
         distinct()
       # attr(df_stat, 'p_test') = 'independent t-test'
     }
-    else if(n_distinct(df_chewed$id_) > 2){
+    else if(n_distinct(inputs_filtered$id_) > 2){
       df_stat = inputs_filtered %>%
         group_by(across(all_of(strata_var))) %>%
         myanova_test(as.formula(f)) %>%
@@ -311,16 +277,7 @@ stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NU
         mutate(!!stat_name := as.numeric(NA))
     }
 
-    # if(is.null(strata_var))
-    #   df_stat = df_stat %>% cbind(df_stat)
-    # else
-    #   df_stat = df_stat %>% left_join(df_stat, by=strata_var) # %>% replace_na(list(0) %>% setNames(stat_name))
-
   }
-  # df_stat = df_stat %>% select(-any_of('id_'))
-
-  # #Assign (W2.2.2)
-  # gourmex$storage$stats[[var]] = df_stat
   return(df_stat) # %>% restore_attributes(attrs))
 }
 

@@ -1,24 +1,25 @@
+vars = c('gender', 'happy', 'occupation', 'symptoms', 'age')
+gourmex = mount(vars, id_cols='id', group_cols='group', params = myparams) %>%
+  ingest(df_test) %>%
+  digest()
 test_that("stat_total works", {
-  vars = c('gender', 'happy', 'occupation', 'symptoms') # , 'age')
-  # vars = 'gender'
-  gourmex = mount(vars, id_cols='id', group_cols='group', params = myparams2) %>%
-    ingest(df_test) %>%
-    digest()
-
   for(var in vars){
-    df_stats = gourmex$storage$stats[[var]] %>%
-      mutate(!!var := as.character(.data[[var]]))
+    df_stats = gourmex$storage$stats[[var]]
 
     expect_equal(unique(df_stats$N), n_distinct(df_test$id))
+
+    df_N_group = df_test %>% summarize(n = n_distinct(id), .by='group') %>%
+      full_join(df_stats, by='group')
+    expect_equal(df_N_group$n, df_N_group$N_group)
+  }
+
+  for(var in setdiff(vars, 'age')){
+    df_stats = gourmex$storage$stats[[var]]
 
     df_n_level = df_test %>% unnest(!!var, keep_empty = TRUE) %>%
       summarize(n = n_distinct(id), .by=all_of(var)) %>%
       mutate(!!var := as.character(.data[[var]])) %>% full_join(df_stats, by=var)
     expect_equal(df_n_level$n, df_n_level$n_level)
-
-    df_N_group = df_test %>% summarize(n = n_distinct(id), .by='group') %>%
-      full_join(df_stats, by='group')
-    expect_equal(df_N_group$n, df_N_group$N_group)
 
     df_n_level_group = df_test %>% unnest(!!var, keep_empty = TRUE) %>%
       summarize(n = n_distinct(id), .by=all_of(c(var, 'group'))) %>%
@@ -29,12 +30,7 @@ test_that("stat_total works", {
 
 
 test_that("stat_perc works", {
-  vars = c('gender', 'happy', 'occupation', 'symptoms') # , 'age')
-  gourmex = mount(vars, id_cols='id', group_cols='group', params = myparams2) %>%
-    ingest(df_test) %>%
-    digest()
-
-  for(var in vars){
+  for(var in setdiff(vars, 'age')){
     df_stats = gourmex$storage$stats[[var]] %>%
       mutate(!!var := as.character(.data[[var]]))
 
@@ -54,13 +50,7 @@ test_that("stat_perc works", {
 
 
 test_that("stat_n_avail and stat_n_miss work", {
-  vars = c('gender', 'happy', 'occupation', 'symptoms') # , 'age')
-  # vars = 'gender'
-  gourmex = mount(vars, id_cols='id', group_cols='group', params = myparams2) %>%
-    ingest(df_test) %>%
-    digest()
-
-  for(var in vars){
+  for(var in setdiff(vars, 'age')){
     df_stats = gourmex$storage$stats[[var]] %>%
       mutate(!!var := as.character(.data[[var]]))
 
@@ -81,3 +71,74 @@ test_that("stat_n_avail and stat_n_miss work", {
     }
   }
 })
+
+
+test_that("pvalues work", {
+  for(var in c('gender', 'happy', 'occupation')){
+    A = df_test %>% unnest(all_of(var)) %>% filter(!is.na(group))
+    pv = chisq.test(A[[var]], A$group)$p.value
+    expect_equal(unique(gourmex$storage$stats[[var]]$p_value), pv)
+  }
+
+  # multi-level
+  df_stat = gourmex$storage$stats$symptoms %>% filter(!is.na(symptoms))
+  for(level in unique(df_stat$symptoms)){
+    A = df_test %>% unnest(symptoms) %>% filter(!is.na(group)) %>%
+      mutate(V = any(symptoms==level, na.rm=TRUE), .by='id') %>%
+      distinct(id, V, group)
+
+    expect_equal(
+      df_stat %>% filter(symptoms==level) %>% pull(p_value) %>% unique(),
+      chisq.test(A$V, A$group)$p.value
+    )
+  }
+
+  # numerical: >2 groups
+  A = df_test %>% filter(!is.na(age), !is.na(group))
+  pv = anova_test(A, age ~ group)$p
+  expect_equal(unique(gourmex$storage$stats$age$p_value), pv)
+})
+
+
+gourmex2 = mount('age', id_cols='id', group_cols='gender', params = myparams) %>%
+  ingest(df_test) %>%
+  digest()
+test_that("pvalues num 2 groups work", {
+  A = df_test %>% filter(!is.na(age), !is.na(gender))
+  pv = t.test(age ~ gender, A)$p.value
+  expect_equal(unique(gourmex2$storage$stats$age$p_value), pv)
+})
+
+
+gourmex3 = mount(vars, id_cols='id', group_cols='group', strata_cols='location', params = myparams) %>%
+  ingest(df_test) %>%
+  digest()
+test_that("good separation for each strata", {
+  stratas = df_test %>% filter(!is.na(location)) %>% pull(location) %>% unique()
+  for(strata in stratas){
+    gourmex_strata = mount(vars, id_cols='id', group_cols='group', params = myparams) %>%
+      ingest(df_test %>% filter(location == strata)) %>%
+      digest()
+
+    for(var in vars){
+      A = gourmex3$storage$stats[[var]] %>% filter(location == strata) %>% select(-location) %>% distinct()
+      B = gourmex_strata$storage$stats[[var]]
+      expect_identical(A,B)
+    }
+  }
+})
+
+
+# vars3 = setdiff(vars, 'gender')
+# gourmex3a = mount(vars3, id_cols='id', group_cols=c('group', 'gender'), params = myparams) %>%
+#   ingest(df_test) %>%
+#   digest()
+# gourmex3b = mount(vars3, id_cols='id', group_cols='group_gender', params = myparams) %>%
+#   ingest(df_test %>% mutate(group_gender = paste0(group, '_', gender), .keep='unused')) %>%
+#   digest()
+
+
+
+
+
+
