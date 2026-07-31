@@ -18,7 +18,8 @@ URL: https://github.com/Thorry13/yummystats
 BugReports: https://github.com/Thorry13/yummystats/issues
 Imports: 
     dplyr,
-    tibble
+    tibble,
+    tidyr
 Suggests: 
     knitr,
     rmarkdown,
