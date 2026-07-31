@@ -7,7 +7,7 @@ test_that("params reduction works", {
 
 
 test_that("check digestion", {
-  vars = c('age', 'gender', 'happy', 'occupations', 'symptoms')
+  vars = c('age', 'gender', 'happy', 'occupation', 'symptoms')
   # vars = c('gender', 'happy', 'symptoms')
 
   gourmex = mount(vars, 'id', params=myparams) %>%
@@ -32,7 +32,7 @@ test_that("check digestion", {
 
 
 test_that("check digestion with groups", {
-  vars = c('age', 'gender', 'happy', 'occupations', 'symptoms')
+  vars = c('age', 'gender', 'happy', 'occupation', 'symptoms')
 
   gourmex = mount(vars, 'id', group_cols = 'group', params=myparams2) %>%
     ingest(df_test) %>%

@@ -46,7 +46,7 @@ store_stats = function(gourmex, var, new_stats){
   if(is.null(join_cols))
     df_stats = cbind(df_stats, new_stats)
   else
-    df_stats = df_stats %>% left_join(new_stats, by=join_cols)
+    df_stats = df_stats %>% left_join(new_stats, by=all_of(join_cols)) # cross_join warning ?
 
   gourmex$storage$stats[[var]] = df_stats
   return(gourmex)

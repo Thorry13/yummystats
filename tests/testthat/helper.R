@@ -1,34 +1,37 @@
 #### Definition of a standard dataframe for test ####
+N = 1000
 
 # numerical values
-ages = runif(100, 0, 100)
+ages = runif(N, 0, 100)
 
 # insert missing values
-ages[c(13,84,51)] = NA
+ages[1:0.03*N] = NA
+ages = sample(ages, N)
 
 # factor
-genders = factor(rep(c(rep('Female', 20), rep('Male', 20), rep(NA, 10)), 2))
+genders = factor(c(rep('Female', 0.45*N), rep('Male', 0.35*N), rep(NA, 0.2*N))) %>% sample(N)
 
 # categorical values
 some_occupations = c('Doctor', 'Teacher', 'Manager', 'Firefighter', 'Police officer')
-occupations = sample(some_occupations, 100, replace=TRUE)
+occupations = sample(some_occupations, N, replace=TRUE) %>% sample(N)
 
 # boolean values
-happy = c(rep(T, 40), rep(F, 10),
-          rep(NA, 4), rep(T,38), rep(F, 8))
+happy = c(rep(T, 0.78*N), rep(F, 0.18*N), rep(NA, 0.4*N)) %>% sample(N)
 
 # lists
 symptoms_list = c('s1', 's2', 's3')
-N = floor(runif(100, 0, 4))
-symptoms = sapply(N, \(n) sample(symptoms_list, n))
+n_s = floor(runif(N, 0, 4))
+symptoms = sapply(n_s, \(n) sample(symptoms_list, n)) %>% sample(N)
+
+groups = c(rep('A', 0.5*N), rep('B', 0.3*N), rep('AB+', 0.2*N)) %>% sample(N)
 
 # Build data frame
 df_test = tibble(
-    group=c(rep('A', 50), rep('B', 30), rep('AB+', 20)),
+    group=groups,
     age=ages,
     gender=genders,
     happy=happy,
-    occupations=occupations,
+    occupation=occupations,
     symptoms=symptoms) %>%
   mutate(id = row_number())
 
