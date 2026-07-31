@@ -1,5 +1,6 @@
+vars = c('age', 'gender', 'happy', 'symptoms')
+
 test_that("basic mount", {
-  vars = c('age', 'gender', 'happy', 'symptoms')
   gourmex = mount(vars, 'id')
   expect_equal(class(gourmex), 'gourmex')
   expect_equal(names(gourmex), c('storage', 'params'))
@@ -15,7 +16,12 @@ test_that("basic mount", {
 # })
 
 test_that("mount with groups", {
-  vars = c('age', 'gender', 'happy', 'symptoms')
   gourmex = mount(vars, 'id', 'group')
   expect_equal(gourmex$params$group_cols, 'group')
+})
+
+
+test_that("mount with stratas", {
+  gourmex = mount(vars, 'id', strata_cols='location')
+  expect_equal(gourmex$params$strata_cols, 'location')
 })

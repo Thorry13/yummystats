@@ -37,7 +37,7 @@ swallow = function(gourmex){
   gourmex$storage$chewed = list()
   gourmex$storage$stats = list()
 
-  # Treat each variable independently
+  # Process each variable independently
   for(var in gourmex$params$vars){
     chewed = chew(gourmex, var) # W1.1
     gourmex$storage$chewed[[var]] = chewed$chewed # W2.1
@@ -48,7 +48,7 @@ swallow = function(gourmex){
 }
 
 
-#' W1.1 Chewing step: Data preparation before aggregationyum
+#' W1.1 Chewing step: Data preparation before aggregation
 #'
 #' @param df
 #' @param var
@@ -66,7 +66,7 @@ chew = function(gourmex, var){
   }
 
   id_cols = gourmex$params$id_cols
-  group_cols = gourmex$params$group_cols
+  group_cols = c(gourmex$params$group_cols, gourmex$params$strata_cols)
 
   # Simplify dataframe
   chewed = gourmex$storage$raw %>%

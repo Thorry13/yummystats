@@ -25,8 +25,6 @@ digest = function(gourmex){
       df_stats = stat_func(gourmex, var, stat_name=stat_name) # W2.2.1
       gourmex = store_stats(gourmex, var, df_stats) # W2.2.2
     }
-
-    # , keep_na_rows=T # Comment faire si on relance ?
   }
 
   return(gourmex)
@@ -36,7 +34,7 @@ digest = function(gourmex){
 # W2.2.2
 store_stats = function(gourmex, var, new_stats){
   df_stats = gourmex$storage$stats[[var]]
-  join_cols = intersect(names(new_stats), c(var, gourmex$params$group_cols))
+  join_cols = intersect(names(new_stats), c(var, gourmex$params$group_cols, gourmex$params$strata_cols))
   stat_names = names(new_stats) %>% setdiff(join_cols)
 
   # Remove former stats (show warning if any ?)
