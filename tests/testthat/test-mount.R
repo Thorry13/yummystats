@@ -18,10 +18,14 @@ test_that("basic mount", {
 test_that("mount with groups", {
   gourmex = mount(vars, 'id', 'group')
   expect_equal(gourmex$params$group_cols, 'group')
+  gourmex = mount(vars, 'id', c('group', 'location'))
+  expect_equal(gourmex$params$group_cols, c('group', 'location'))
 })
 
 
 test_that("mount with stratas", {
   gourmex = mount(vars, 'id', strata_cols='location')
   expect_equal(gourmex$params$strata_cols, 'location')
+  gourmex = mount(vars, 'id', strata_cols=c('group', 'location'))
+  expect_equal(gourmex$params$strata_cols, c('group', 'location'))
 })

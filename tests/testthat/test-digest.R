@@ -18,7 +18,7 @@ test_that("check digestion", {
   num_stats = c('mean', 'std', 'SE', 'CI95', 'min', 'q1', 'median', 'q3', 'max')
   num_stats_group = c('mean', 'std', 'SE', 'CI95', 'min', 'q1', 'median', 'q3', 'max') %>% paste0('_group')
 
-  for(var in gourmex$types$var){
+  for(var in vars){
     var_type = gourmex$types %>% filter(var == .env$var) %>% pull(var_type)
     stat_names = gourmex$params$stats %>% filter(var_type == .env$var_type) %>% pull(stat_name)
     if('num_stats' %in% stat_names)
@@ -40,7 +40,7 @@ test_that("check digestion with groups", {
   num_stats = c('mean', 'std', 'SE', 'CI95', 'min', 'q1', 'median', 'q3', 'max')
   num_stats_group = c('mean', 'std', 'SE', 'CI95', 'min', 'q1', 'median', 'q3', 'max') %>% paste0('_group')
 
-  for(var in gourmex$types$var){
+  for(var in vars){
     var_type = gourmex$types %>% filter(var == .env$var) %>% pull(var_type)
     stat_names = gourmex$params$stats %>% filter(var_type == .env$var_type) %>% pull(stat_name)
     if('num_stats' %in% stat_names)
@@ -53,10 +53,9 @@ test_that("check digestion with groups", {
 })
 
 
-test_that("check digestion with groups", {
-  vars = c('age', 'gender', 'happy', 'occupation', 'symptoms')
 
-  gourmex = mount(vars, 'id', group_cols = 'group', params=myparams) %>%
+test_that("check digestion with multiple group cols", {
+  gourmex = mount(vars, 'id', group_cols = c('group', 'location'), params=myparams) %>%
     ingest(df_test) %>%
     digest()
 
@@ -65,7 +64,7 @@ test_that("check digestion with groups", {
   num_stats = c('mean', 'std', 'SE', 'CI95', 'min', 'q1', 'median', 'q3', 'max')
   num_stats_group = c('mean', 'std', 'SE', 'CI95', 'min', 'q1', 'median', 'q3', 'max') %>% paste0('_group')
 
-  for(var in gourmex$types$var){
+  for(var in vars){
     var_type = gourmex$types %>% filter(var == .env$var) %>% pull(var_type)
     stat_names = gourmex$params$stats %>% filter(var_type == .env$var_type) %>% pull(stat_name)
     if('num_stats' %in% stat_names)
@@ -79,3 +78,47 @@ test_that("check digestion with groups", {
 
 
 
+test_that("check digestion with stratas", {
+  gourmex = mount(vars, 'id', group_cols = 'group', strata_cols='location', params=myparams) %>%
+    ingest(df_test) %>%
+    digest()
+
+  expect_setequal(names(gourmex$storage$stats), gourmex$params$vars)
+
+  num_stats = c('mean', 'std', 'SE', 'CI95', 'min', 'q1', 'median', 'q3', 'max')
+  num_stats_group = c('mean', 'std', 'SE', 'CI95', 'min', 'q1', 'median', 'q3', 'max') %>% paste0('_group')
+
+  for(var in vars){
+    var_type = gourmex$types %>% filter(var == .env$var) %>% pull(var_type)
+    stat_names = gourmex$params$stats %>% filter(var_type == .env$var_type) %>% pull(stat_name)
+    if('num_stats' %in% stat_names)
+      stat_names = stat_names %>% setdiff('num_stats') %>% c(num_stats)
+    if('num_stats_group' %in% stat_names)
+      stat_names = stat_names %>% setdiff('num_stats_group') %>% c(num_stats_group)
+
+    expect_all_true(c(stat_names, 'location') %in% names(gourmex$storage$stats[[var]]))
+  }
+})
+
+test_that("check digestion with stratas", {
+  vars2 = setdiff(vars, 'gender')
+  gourmex = mount(vars2, 'id', group_cols = 'group', strata_cols=c('gender', 'location'), params=myparams) %>%
+    ingest(df_test) %>%
+    digest()
+
+  expect_setequal(names(gourmex$storage$stats), gourmex$params$vars)
+
+  num_stats = c('mean', 'std', 'SE', 'CI95', 'min', 'q1', 'median', 'q3', 'max')
+  num_stats_group = c('mean', 'std', 'SE', 'CI95', 'min', 'q1', 'median', 'q3', 'max') %>% paste0('_group')
+
+  for(var in vars2){
+    var_type = gourmex$types %>% filter(var == .env$var) %>% pull(var_type)
+    stat_names = gourmex$params$stats %>% filter(var_type == .env$var_type) %>% pull(stat_name)
+    if('num_stats' %in% stat_names)
+      stat_names = stat_names %>% setdiff('num_stats') %>% c(num_stats)
+    if('num_stats_group' %in% stat_names)
+      stat_names = stat_names %>% setdiff('num_stats_group') %>% c(num_stats_group)
+
+    expect_all_true(c(stat_names, 'gender', 'location') %in% names(gourmex$storage$stats[[var]]))
+  }
+})

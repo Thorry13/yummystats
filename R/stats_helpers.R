@@ -191,7 +191,8 @@ stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NU
   inputs_filtered = df_chewed %>% filter(!is.na(.data[[var]])) # %>% distinct() # Why distinct ?
 
   if(!is.null(by)){
-    inputs_filtered = inputs_filtered %>% filter(!is.na(.data[[by]]))
+    for (col in by)
+      inputs_filtered = inputs_filtered %>% filter(!is.na(.data[[col]]))
     df_by = inputs_filtered %>%
       group_by(across(all_of(by))) %>%
       summarize(id_ = as.character(cur_group_id())) %>% ungroup()
