@@ -1,0 +1,50 @@
+#' Gourmex shaping.
+#'
+#' @description
+#' Once the statistics are computed and stored inside a Gourmex,
+#' they usually need to be formatted to be more human-friendly.
+#'
+#' This can be done through this shaping operation. It will transform each
+#' statistical column independently, usually into character vectors.
+#'
+#'
+#' @return A Gourmex with shaped statistical information (ready for dispatch).
+#' @export
+#'
+#' @examples
+#'
+shape = function(gourmex){
+  # W3.1
+  params_formats = reduce_params(gourmex$params$formats)
+
+  gourmex$storage$shaped = list()
+  # W3.2
+  # shaped = sapply(gourmex$types$var, function(var){
+  for(var in gourmex$types$var){
+    df_shaped = gourmex$storage$stats[[var]]
+    var_type = gourmex$types %>% filter(var == .env$var) %>% pull(var_type)
+    stat_ids = params_formats %>% filter(var_type == .env$var_type) %>% pull(stat_id)
+
+    for(stat_id in stat_ids){
+      current_stat = stats_formats %>% filter(stat_id == .env$stat_id)
+      stat_name = current_stat$stat_name
+      format_func = current_stat$format_func[[1]]
+
+      # W3.2.1
+      if(stat_name %in% group_vars(df_shaped))
+        df_shaped = df_shaped %>%
+          ungroup() %>%
+          mutate(across(all_of(stat_name), format_func)) %>%
+          group_by(across(all_of(group_vars(df_shaped))))
+      else
+        df_shaped = df_shaped %>% mutate(across(all_of(stat_name), format_func))
+    }
+    gourmex$storage$shaped[[var]] = df_shaped
+  }
+
+  # W3.3
+  return(gourmex)
+}
+
+
+

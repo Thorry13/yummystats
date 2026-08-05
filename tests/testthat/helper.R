@@ -41,7 +41,7 @@ df_test = tibble(
   mutate(id = row_number())
 
 # ---
-# TO REMOVE
+# STATS
 
 stat_funcs_cat = list(
   N = expr(\(...) stat_total(..., by=gourmex$params$strata_cols)),
@@ -83,8 +83,61 @@ C_gp = tibble(var_type = 'numerical', stat_name = names(stat_funcs_num_gp), stat
 
 stat_funcs = bind_rows(A,B,C)
 stat_funcs_gp = bind_rows(A_gp,B_gp,C_gp)
-myparams0 = list('stats'=stat_funcs, 'formats'=NULL, 'layout'=NULL)
-myparams = list('stats'=bind_rows(stat_funcs, stat_funcs_gp), 'formats'=NULL, 'layout'=NULL)
+myparams0 = list('stats'=stat_funcs, 'shapes'=NULL, 'layout'=NULL)
+myparams = list('stats'=bind_rows(stat_funcs, stat_funcs_gp), 'shapes'=NULL, 'layout'=NULL)
 
 
+#---
+# SHAPES
 
+shapes_cat = list(
+  N = format_numbers,
+  n_avail = format_numbers,
+  n_level = \(x) round_numbers(x, precision=1) %>% format_numbers(),
+  n_missing = format_numbers,
+  p_level = format_perc
+)
+shapes_logic = shapes_cat
+shapes_num = list(
+  N = format_numbers,
+  n_avail = format_numbers,
+  mean = \(x) style_number(x, 1),
+  CI95 = \(x) style_number(x, 1),
+  median = \(x) style_number(x, 1),
+  min = \(x) style_number(x, 1),
+  max = \(x) style_number(x, 1),
+  q1 = \(x) style_number(x, 1),
+  q3 = \(x) style_number(x, 1)
+)
+
+shapes_cat_gp = list(
+  N_group = format_numbers,
+  n_avail_group = format_numbers,
+  n_level_group = \(x) round_numbers(x, precision=1) %>% format_numbers(),
+  p_level_group = format_numbers,
+  p_value = style_pvalue
+)
+shapes_logic_gp = shapes_cat_gp
+shapes_num_gp = list(
+  N_group = format_numbers,
+  n_avail_group = format_numbers,
+  mean_group = \(x) style_number(x, 1),
+  CI95_group = \(x) style_number(x, 1),
+  median_group = \(x) style_number(x, 1),
+  min_group = \(x) style_number(x, 1),
+  max_group = \(x) style_number(x, 1),
+  q1_group = \(x) style_number(x, 1),
+  q3_group = \(x) style_number(x, 1)
+)
+
+A = tibble(var_type = 'categorical', stat_name = names(shapes_cat), stat_func = unname(shapes_cat))
+B = tibble(var_type = 'logical', stat_name = names(shapes_logic), stat_func = unname(shapes_logic))
+C = tibble(var_type = 'numerical', stat_name = names(shapes_num), stat_func = unname(shapes_num))
+A_gp = tibble(var_type = 'categorical', stat_name = names(shapes_cat_gp), stat_func = unname(shapes_cat_gp))
+B_gp = tibble(var_type = 'logical', stat_name = names(shapes_logic_gp), stat_func = unname(shapes_logic_gp))
+C_gp = tibble(var_type = 'numerical', stat_name = names(shapes_num_gp), stat_func = unname(shapes_num_gp))
+
+shapes = bind_rows(A,B,C)
+shapes_gp = bind_rows(A_gp,B_gp,C_gp)
+myparams0$shapes = shapes
+myparams$shapes = bind_rows(shapes, shapes_gp)
