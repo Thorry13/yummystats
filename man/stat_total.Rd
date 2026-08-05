@@ -2,20 +2,22 @@
 % Please edit documentation in R/stats_helpers.R
 \name{stat_total}
 \alias{stat_total}
-\title{Extend the statistics with a total column named \code{total_col}.}
+\title{Calculate counts of a level for a given variable.}
 \usage{
 stat_total(gourmex, var, stat_name = "N", by = NULL)
 }
 \arguments{
-\item{stat_name}{indicates how the new column should be named.}
+\item{gourmex}{A \code{gourmex} object.}
 
-\item{by}{is used as grouping variables.}
+\item{var}{The variable to compute statistic on.}
 
-\item{df}{A \code{report_df} data frame.}
+\item{stat_name}{Indicates how the new column should be named.}
+
+\item{by}{Is used as grouping variables.}
 }
 \value{
-An extended \code{report_df} object.
+A dataframe with the required counts.
 }
 \description{
-Extend the statistics with a total column named \code{total_col}.
+Calculate counts of a level for a given variable.
 }

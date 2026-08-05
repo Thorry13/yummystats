@@ -2,10 +2,47 @@
 % Please edit documentation in R/mount.R
 \name{mount}
 \alias{mount}
-\title{Mount the gourmex machine.}
+\title{Mount the Gourmex machine.}
 \usage{
-mount(vars, id_cols, group_cols = NULL, params = NULL)
+mount(vars, id_cols, group_cols = NULL, strata_cols = NULL, params = NULL)
+}
+\arguments{
+\item{vars}{The variables to compute stats on.}
+
+\item{id_cols}{The columns used to identify observations.}
+
+\item{group_cols}{The columns used to identify groups to be compared.}
+
+\item{strata_cols}{The columns used to separate distinct analysis.}
+
+\item{params}{The parameters from the analysis to the display.}
+}
+\value{
+A mounted Gourmex, ready for ingestion.
 }
 \description{
-Mount the gourmex machine.
+A Gourmex is a set of tools able to calculate and display stats
+on a nice custom layout.
+
+When mounting a Gourmex, you will first need to provide some columns information:
+\itemize{
+\item Which variables to analyse (\code{vars}) ?
+\item Which ones used to identify observation (\code{id_cols}) ?
+\item Which ones used to group stats and compare (\code{group_cols}) ?
+\item Which ones used to separate stats (\code{strata_cols}) ?
+}
+
+Then Gourmex asks for a set of parameters (\code{params}) to know:
+\itemize{
+\item which stats to compute (\code{params$stats}).
+\item how to format them for human reading (\code{params$shapes}).
+\item how to combine them in the returned layout (\code{parmas$layout}).
+}
+}
+\examples{
+gourmex = mount(c('Sepal.Length', 'Species'), id_cols='fid') # iris data will be ingested later
+
+}
+\seealso{
+\code{\link[=ingest]{ingest()}}, \code{\link[=digest]{digest()}}
 }

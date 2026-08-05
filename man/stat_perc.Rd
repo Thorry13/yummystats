@@ -14,6 +14,8 @@ stat_perc(
 )
 }
 \arguments{
+\item{gourmex}{A \code{gourmex} object.}
+
 \item{stat_name}{indicates how the percentage column should be named.}
 
 \item{numerator_col}{The numerator.}
@@ -21,11 +23,9 @@ stat_perc(
 \item{denominator_col}{The denominator. If NULL, the sum of the \code{count_col} column is used as \code{total_col}.}
 
 \item{by}{is used as grouping variables.}
-
-\item{df}{A \code{report_df} data frame.}
 }
 \value{
-An extended \code{report_df} object.
+A dataframe with the required percentages.
 }
 \description{
 Extend the statistics with percentage column named \code{stat_name}.

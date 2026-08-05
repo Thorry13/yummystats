@@ -10,3 +10,15 @@ check_unicity = function(df, var, id_cols=NULL, return_exceptions = FALSE, na.rm
   else
     return(!any(checks$n > 1))
 }
+
+
+reduce_params = function(params){
+  new_params = params %>%
+    group_by(var_type, stat_name) %>%
+    slice(n()) %>%
+    ungroup() %>%
+    mutate(stat_id = row_number())
+
+  return(new_params)
+}
+

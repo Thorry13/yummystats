@@ -4,19 +4,19 @@
 \alias{stat_n_avail}
 \title{Extend the statistics with the number of available data as a column named \code{stat_name}}
 \usage{
-stat_n_avail(gourmex, var, stat_name = "n_avail", by = NULL, keep_na_rows = T)
+stat_n_avail(gourmex, var, stat_name = "n_avail", by = NULL)
 }
 \arguments{
+\item{gourmex}{A \code{gourmex} object.}
+
 \item{var}{The column name of \code{df} where nan values can be detected.}
 
 \item{stat_name}{indicates how the column reporting the number of available data should be named.}
 
 \item{by}{is used as grouping variables}
-
-\item{df}{A \code{report_df} object.}
 }
 \value{
-An extended \code{report_df} object.
+A dataframe with the required available values.
 }
 \description{
 Extend the statistics with the number of available data as a column named \code{stat_name}

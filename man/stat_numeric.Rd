@@ -8,9 +8,18 @@ mean, std, min, Q1, median, Q3, max}
 stat_numeric(gourmex, var, stat_name, suffix = NULL, by = NULL)
 }
 \arguments{
-\item{suffix}{append suffix to the}
+\item{gourmex}{A \code{gourmex} object.}
 
-\item{df}{A \code{report_df} object}
+\item{var}{A numerical variable name.}
+
+\item{stat_name}{Name used to store the results.}
+
+\item{suffix}{Used to append a suffix on numerical statistics names.}
+
+\item{by}{Used to group results.}
+}
+\value{
+A dataframe with the numerical stats.
 }
 \description{
 Extend statistics for numerical variables, with the following values :

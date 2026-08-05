@@ -7,14 +7,18 @@
 stat_pvalue(gourmex, var, stat_name = "p_value", by = NULL, strata_var = NULL)
 }
 \arguments{
-\item{stat_name}{indicates how the p-values columns should be named.}
+\item{gourmex}{A \code{gourmex} object.}
 
-\item{by}{is used as grouping variables.}
+\item{var}{The variable used to evaluate p-value.}
 
-\item{df}{A \code{report_df} object}
+\item{stat_name}{Indicates how the p-values columns should be named.}
+
+\item{by}{Is used as grouping variables.}
+
+\item{strata_var}{is used to separate multiple comparisons.}
 }
 \value{
-An extended \code{report_df} object.
+A dataframe with the required p-values.
 }
 \description{
 Extend the statistics with the significance

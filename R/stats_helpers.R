@@ -1,13 +1,11 @@
-#' Extend the statistics with a total column named `total_col`.
+#' Calculate counts of a level for a given variable.
 #'
-#' @param df A `report_df` data frame.
-#' @param stat_name indicates how the new column should be named.
-#' @param by is used as grouping variables.
+#' @param gourmex A `gourmex` object.
+#' @param var The variable to compute statistic on.
+#' @param stat_name Indicates how the new column should be named.
+#' @param by Is used as grouping variables.
 #'
-#' @return An extended `report_df` object.
-#' @export
-#'
-#' @examples
+#' @return A dataframe with the required counts.
 stat_total = function(gourmex, var, stat_name='N', by=NULL){
   # check_report_df(df)
   df_chewed = gourmex$storage$chewed[[var]]
@@ -27,16 +25,13 @@ stat_total = function(gourmex, var, stat_name='N', by=NULL){
 
 #' Extend the statistics with percentage column named `stat_name`.
 #'
-#' @param df A `report_df` data frame.
+#' @param gourmex A `gourmex` object.
 #' @param numerator_col The numerator.
 #' @param denominator_col The denominator. If NULL, the sum of the `count_col` column is used as `total_col`.
 #' @param stat_name indicates how the percentage column should be named.
 #' @param by is used as grouping variables.
 #'
-#' @return An extended `report_df` object.
-#' @export
-#'
-#' @examples
+#' @return A dataframe with the required percentages.
 stat_perc = function(gourmex, var, stat_name='p', numerator_col='n', denominator_col=NULL, by=NULL){
   # numerator_col and denominator_col should be numerical...
 
@@ -73,17 +68,13 @@ stat_perc = function(gourmex, var, stat_name='p', numerator_col='n', denominator
 
 #' Extend the statistics with the number of available data as a column named `stat_name`
 #'
-#' @param df A `report_df` object.
+#' @param gourmex A `gourmex` object.
 #' @param var The column name of `df` where nan values can be detected.
 #' @param stat_name indicates how the column reporting the number of available data should be named.
 #' @param by is used as grouping variables
-#' @param keep_na_rows
 #'
-#' @return An extended `report_df` object.
-#' @export
-#'
-#' @examples
-stat_n_avail = function(gourmex, var, stat_name="n_avail", by=NULL, keep_na_rows=T){
+#' @return A dataframe with the required available values.
+stat_n_avail = function(gourmex, var, stat_name="n_avail", by=NULL){
   df_chewed = gourmex$storage$chewed[[var]]
   df_stat = gourmex$storage$stats[[var]]
   var_type =gourmex$types %>% filter(var == .env$var) %>% pull(var_type)
@@ -105,17 +96,13 @@ stat_n_avail = function(gourmex, var, stat_name="n_avail", by=NULL, keep_na_rows
 
 #' Extend the statistics with the number of missing data as a column named `stat_name`
 #'
-#' @param df A `report_df` object.
+#' @param gourmex A `gourmex` object.
 #' @param var The column name of `df` where nan values can be detected.
 #' @param count_col The name of the column to count non-nan values on.
 #' @param missing_col indicates how the column reporting the number of missing data should be named.
 #' @param by is used as grouping variables
-#' @param keep_na_rows
 #'
-#' @return
-#' @export
-#'
-#' @examples
+#' @return A dataframe with the required missing values.
 stat_n_miss = function(gourmex, var, stat_name='n_miss', by=NULL){
   # check_report_df(df)
   df_chewed = gourmex$storage$chewed[[var]]
@@ -132,23 +119,6 @@ stat_n_miss = function(gourmex, var, stat_name='n_miss', by=NULL){
     group_by(across(all_of(by))) %>%
     summarize(!!stat_name := sum(is_missing)) %>%
     ungroup()
-
-  # # Extend
-  # if(is.null(by))
-  #   df_stat = cbind(df_stat, df_stat)
-  # else
-  #   df_stat = df_stat %>% left_join(df_stat, by=by) # %>% replace_na(list(0) %>% setNames(stat_name))
-
-  # # Remove NAs
-  # if(!keep_na_rows){
-  #   if(var_type != 'numerical')
-  #     df_stat = df_stat %>% filter(!is.na(level))
-  #   # if(attrs$stat_type == 'numerical')
-  #   #   df = df %>% filter(!is.na(variable))
-  # }
-
-  # # Convert back to report_df
-  # df = df %>% restore_attributes(attrs)
 
   return(df_stat)
 }
@@ -172,14 +142,13 @@ myanova_test = function(data, f){
 
 #' Extend the statistics with the significance
 #'
-#' @param df A `report_df` object
-#' @param stat_name indicates how the p-values columns should be named.
-#' @param by is used as grouping variables.
+#' @param gourmex A `gourmex` object.
+#' @param var The variable used to evaluate p-value.
+#' @param stat_name Indicates how the p-values columns should be named.
+#' @param by Is used as grouping variables.
+#' @param strata_var is used to separate multiple comparisons.
 #'
-#' @return An extended `report_df` object.
-#' @export
-#'
-#' @examples
+#' @return A dataframe with the required p-values.
 stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NULL){
   df_chewed = gourmex$storage$chewed[[var]]
   # df_stat = gourmex$storage$stats[[var]]
@@ -215,8 +184,6 @@ stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NU
     if(!pval_per_level){
       # Calculate p-value
       df_stat = inputs_filtered %>%
-        # select() %>%
-        # distinct() %>%
         group_by(across(all_of(strata_var))) %>%
         summarize(!!stat_name := mychisq_test(.data[[var]], id_)) %>%
         ungroup()
@@ -245,7 +212,6 @@ stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NU
           complete(!!sym(var), fill = list(value=NA))
       }
       else
-        # df_stat[[stat_name]] = as.numeric(NA)
         df_stat = tibble(as.numeric(NA)) %>% setNames(stat_name)
     }
   }
@@ -260,7 +226,6 @@ stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NU
         ungroup() %>%
         select(all_of(c(strata_var, stat_name))) %>%
         distinct()
-      # attr(df_stat, 'p_test') = 'independent t-test'
     }
     else if(n_distinct(inputs_filtered$id_) > 2){
       df_stat = inputs_filtered %>%
@@ -279,24 +244,21 @@ stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NU
     }
 
   }
-  return(df_stat) # %>% restore_attributes(attrs))
+  return(df_stat)
 }
 
 
 #' Extend statistics for numerical variables, with the following values :
 #' mean, std, min, Q1, median, Q3, max
 #'
-#' @param df A `report_df` object
-#' @param suffix append suffix to the
-#' @param by
+#' @param gourmex A `gourmex` object.
+#' @param var A numerical variable name.
+#' @param stat_name Name used to store the results.
+#' @param suffix Used to append a suffix on numerical statistics names.
+#' @param by Used to group results.
 #'
-#' @return
-#' @export
-#'
-#' @examples
+#' @return A dataframe with the numerical stats.
 stat_numeric = function(gourmex, var, stat_name, suffix=NULL, by=NULL){
-  # check_report_df(df)
-  # attrs = attributes(df)
   df_chewed = gourmex$storage$chewed[[var]]
   id_cols = gourmex$params$id_cols
 

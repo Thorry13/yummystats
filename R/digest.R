@@ -1,16 +1,22 @@
-reduce_params = function(params){
-  new_params = params %>%
-    group_by(var_type, stat_name) %>%
-    slice(n()) %>%
-    ungroup() %>%
-    mutate(stat_id = row_number())
-
-  return(new_params)
-}
-
-# W2
+#' Run Gourmex digestion
+#'
+#' @description
+#' At this state, the Gourmex object is sufficiently set up and can process the
+#' statistical analysis.
+#'
+#' It saves the results internally so it can be used later with minimal arguments.
+#'
+#' @param gourmex A Gourmex object ready for digestion (ingestion done).
+#'
+#' @returns A Gourmex ready for shaping.
+#' @export
+#'
+#' @examples
+#' data = tibble::rownames_to_column(iris, 'fid')
+#' gourmex = mount(c('Sepal.Length', 'Species'), id_cols='fid')
+#' gourmex = gourmex %>% ingest(data)
+#'
 digest = function(gourmex){
-  # stats_defs = reduce_params(gourmex$params$stats, verbose=TRUE) # W2.1
   params_stats = reduce_params(gourmex$params$stats) # W2.1
 
   # W2.2
@@ -44,7 +50,7 @@ store_stats = function(gourmex, var, new_stats){
   if(is.null(join_cols))
     df_stats = cbind(df_stats, new_stats)
   else
-    df_stats = df_stats %>% left_join(new_stats, by=all_of(join_cols)) # cross_join warning ?
+    df_stats = df_stats %>% left_join(new_stats, by=join_cols) # cross_join warning ?
 
   gourmex$storage$stats[[var]] = df_stats
   return(gourmex)

@@ -1,12 +1,25 @@
 #' Ingest data: Prepare for analysis
 #'
-#' @param gourmex
-#' @param data
+#' @description
+#' During ingestion the algorithm will process each variable to analyse by
+#' starting evaluating its main type (categorical, logical, numerical), then
+#' preparing homogeneous dataframes for stats.
 #'
-#' @returns
+#' The `logical` type usually refers to the same type as `categorical`, however
+#' can be displayed in a different way (single line).
+#'
+#' @param gourmex Mounted Gourmex object ready for analysis.
+#' @param data The data to ingest.
+#'
+#' @returns Gourmex object ready for digestion.
 #' @export
 #'
 #' @examples
+#' data = tibble::rownames_to_column(iris, 'fid')
+#' gourmex = mount(c('Sepal.Length', 'Species'), id_cols='fid')
+#' gourmex = gourmex %>% ingest(data)
+#'
+#' @name ingestion
 ingest = function(gourmex, data){
   gourmex = gourmex %>%
     introduce(data) %>%
@@ -48,16 +61,7 @@ swallow = function(gourmex){
 }
 
 
-#' W1.1 Chewing step: Data preparation before aggregation
-#'
-#' @param df
-#' @param var
-#'
-#' @return
 #' @import dplyr tidyr
-#'
-#' @examples
-# prepare_var = function(df, var, id_cols, by=NULL, var_type='auto', levels=NULL, default=NULL){
 chew = function(gourmex, var){
   # Rewrite unnest
   unnest = function(data, ...){
