@@ -1,5 +1,6 @@
 #### Definition of a standard dataframe for test ####
-N = 1000
+set.seed(1)
+N = 10000
 
 # numerical values
 ages = runif(N, 0, 100)

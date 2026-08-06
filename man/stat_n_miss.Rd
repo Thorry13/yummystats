@@ -12,10 +12,6 @@ stat_n_miss(gourmex, var, stat_name = "n_miss", by = NULL)
 \item{var}{The column name of \code{df} where nan values can be detected.}
 
 \item{by}{is used as grouping variables}
-
-\item{count_col}{The name of the column to count non-nan values on.}
-
-\item{missing_col}{indicates how the column reporting the number of missing data should be named.}
 }
 \value{
 A dataframe with the required missing values.

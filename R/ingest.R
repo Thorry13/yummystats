@@ -17,7 +17,7 @@
 #' @examples
 #' data = tibble::rownames_to_column(iris, 'fid')
 #' gourmex = mount(c('Sepal.Length', 'Species'), id_cols='fid')
-#' gourmex = gourmex %>% ingest(data)
+#' gourmex = ingest(gourmex, data)
 #'
 #' @name ingestion
 ingest = function(gourmex, data){
@@ -62,6 +62,8 @@ swallow = function(gourmex){
 
 
 #' @import dplyr tidyr
+#' @importFrom rlang .data .env
+#' @importFrom data.table :=
 chew = function(gourmex, var){
   # Rewrite unnest
   unnest = function(data, ...){
@@ -82,7 +84,7 @@ chew = function(gourmex, var){
   }
 
   # W1.1.1: Get variable type (numerical, categorical or logical)
-  var_type = gourmex$types %>% filter(var == .env$var) %>% pull(var_type)
+  var_type = gourmex$types %>% filter(.data$var == .env$var) %>% pull(.data$var_type)
 
   # W1.1.2: For categorial and logical
   if(var_type != 'numerical'){
@@ -95,8 +97,8 @@ chew = function(gourmex, var){
         group_by(across(all_of(id_cols))) %>%
         mutate(all_na = all(is.na(.data[[var]]))) %>%
         ungroup() %>%
-        filter(!is.na(.data[[var]]) | all_na) %>%
-        select(-all_na) %>%
+        filter(!is.na(.data[[var]]) | .data$all_na) %>%
+        select(-.data$all_na) %>%
         distinct()
 
       # Simplify dataframe

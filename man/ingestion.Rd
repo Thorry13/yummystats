@@ -26,6 +26,6 @@ can be displayed in a different way (single line).
 \examples{
 data = tibble::rownames_to_column(iris, 'fid')
 gourmex = mount(c('Sepal.Length', 'Species'), id_cols='fid')
-gourmex = gourmex \%>\% ingest(data)
+gourmex = ingest(gourmex, data)
 
 }

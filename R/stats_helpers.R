@@ -5,6 +5,8 @@
 #' @param stat_name Indicates how the new column should be named.
 #' @param by Is used as grouping variables.
 #'
+#' @importFrom rlang .data
+#'
 #' @return A dataframe with the required counts.
 stat_total = function(gourmex, var, stat_name='N', by=NULL){
   # check_report_df(df)
@@ -16,7 +18,7 @@ stat_total = function(gourmex, var, stat_name='N', by=NULL){
     mutate(unity_id = cur_group_id()) %>%
     ungroup() %>%
     group_by(across(all_of(unname(by)))) %>%
-    summarize(!!stat_name := n_distinct(unity_id)) %>%
+    summarize(!!stat_name := n_distinct(.data$unity_id)) %>%
     ungroup()
 
   return(df_stat)
@@ -98,16 +100,17 @@ stat_n_avail = function(gourmex, var, stat_name="n_avail", by=NULL){
 #'
 #' @param gourmex A `gourmex` object.
 #' @param var The column name of `df` where nan values can be detected.
-#' @param count_col The name of the column to count non-nan values on.
-#' @param missing_col indicates how the column reporting the number of missing data should be named.
 #' @param by is used as grouping variables
+#'
+#' @importFrom data.table :=
+#' @importFrom rlang .data .env
 #'
 #' @return A dataframe with the required missing values.
 stat_n_miss = function(gourmex, var, stat_name='n_miss', by=NULL){
   # check_report_df(df)
   df_chewed = gourmex$storage$chewed[[var]]
   # df_stat = gourmex$storage$stats[[var]]
-  var_type =gourmex$types %>% filter(var == .env$var) %>% pull(var_type)
+  var_type =gourmex$types %>% filter(.data$var == .env$var) %>% pull(.data$var_type)
 
   # Count missing values
   df_stat = df_chewed %>%
@@ -117,12 +120,13 @@ stat_n_miss = function(gourmex, var, stat_name='n_miss', by=NULL){
     select(all_of(c(by, gourmex$params$id_cols)), is_missing) %>%
     distinct() %>%
     group_by(across(all_of(by))) %>%
-    summarize(!!stat_name := sum(is_missing)) %>%
+    summarize(!!stat_name := sum(.data$is_missing)) %>%
     ungroup()
 
   return(df_stat)
 }
 
+#' @importFrom stats chisq.test
 mychisq_test = function(vals, groups){
   if(n_distinct(groups) > 1 & n_distinct(vals) > 1)
     p = chisq.test(as.factor(vals), as.factor(groups), correct = F)$p.value
@@ -131,7 +135,7 @@ mychisq_test = function(vals, groups){
   return(p)
 }
 
-#' @import rstatix
+#' @importFrom rstatix anova_test
 myanova_test = function(data, f){
   res_anova = anova_test(data, f)
   if(is_grouped_df(data))
@@ -147,6 +151,10 @@ myanova_test = function(data, f){
 #' @param stat_name Indicates how the p-values columns should be named.
 #' @param by Is used as grouping variables.
 #' @param strata_var is used to separate multiple comparisons.
+#'
+#' @importFrom data.table :=
+#' @importFrom stats setNames as.formula
+#' @importFrom rlang .data .env
 #'
 #' @return A dataframe with the required p-values.
 stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NULL){
@@ -185,7 +193,7 @@ stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NU
       # Calculate p-value
       df_stat = inputs_filtered %>%
         group_by(across(all_of(strata_var))) %>%
-        summarize(!!stat_name := mychisq_test(.data[[var]], id_)) %>%
+        summarize(!!stat_name := mychisq_test(.data[[var]], .data$id_)) %>%
         ungroup()
     }
 
@@ -196,7 +204,7 @@ stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NU
         # Calculate p-value
         df_stat = inputs_filtered %>%
           mutate(V = TRUE) %>%
-          pivot_wider(names_from = all_of(var), values_from=V, names_sort = T) %>% # Pivoting to convert level as a logical variable
+          pivot_wider(names_from = all_of(var), values_from=.data$V, names_sort = T) %>% # Pivoting to convert level as a logical variable
           mutate(across(-all_of(c(by, id_cols, 'id_', strata_var)), ~replace_na(.x, FALSE))) %>%
           group_by(across(all_of(strata_var))) %>%
           summarize(across(-all_of(c(id_cols, by, 'id_')),
@@ -231,7 +239,7 @@ stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NU
       df_stat = inputs_filtered %>%
         group_by(across(all_of(strata_var))) %>%
         myanova_test(as.formula(f)) %>%
-        rename(!!stat_name := p) %>%
+        rename(!!stat_name := .data$p) %>%
         select(all_of(c(strata_var, stat_name))) %>%
         distinct()
       # p = do.call('anova_test', list(inputs_filtered, as.formula(f)))$p
@@ -256,6 +264,8 @@ stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NU
 #' @param stat_name Name used to store the results.
 #' @param suffix Used to append a suffix on numerical statistics names.
 #' @param by Used to group results.
+#'
+#' @importFrom stats qnorm quantile median setNames
 #'
 #' @return A dataframe with the numerical stats.
 stat_numeric = function(gourmex, var, stat_name, suffix=NULL, by=NULL){

@@ -133,6 +133,7 @@ format_perc = function(V, precision=1, digits=0, sumTo100=F, add_sign=F){
 #' keep the previous values.
 #'
 #' @return A character vector with the translated terms.
+#' @importFrom data.table :=
 #' @export
 #'
 #' @examples
@@ -201,7 +202,7 @@ format_list = function(L, format_func, .fn=NULL){
 }
 
 
-
+#' @import stringr
 string_to_multiline = function(s0, l=25, linesep='\n', patterns=c(' ', '-')){
   if(length(s0) > 1)
     return(sapply(s0, string_to_multiline, l, linesep))
@@ -240,6 +241,7 @@ string_to_multiline = function(s0, l=25, linesep='\n', patterns=c(' ', '-')){
 }
 
 
+#' @import stringr
 string_to_thead = function(s0, l=25, force_tag=F){
   if(length(s0) > 1)
     return(sapply(s0, string_to_thead, l, force_tag))
@@ -253,6 +255,7 @@ string_to_thead = function(s0, l=25, force_tag=F){
 }
 
 
+#' @import stringr
 string_to_makecell = function(s0, l=45, force_tag=F){
   if(length(s0) > 1)
     return(sapply(s0, string_to_makecell, l, force_tag))
@@ -266,20 +269,18 @@ string_to_makecell = function(s0, l=45, force_tag=F){
 }
 
 
-string_to_makecell_old = function(s0, l=45){
-  if(str_detect(s0, '\n')){
-    S = str_split_1(s0, '\n')
-    tmp_s = paste0(S, collapse='\\\\')
-    new_s = sprintf('\\makecell[l]{%s}', tmp_s)}
-  else if(!is.null(l) && str_length(s0) > l){
-    starts = seq(1, str_length(s0), l)
-    ends = starts + l - 1
-    S = str_sub(s0, starts, ends)
-    tmp_s = paste0(S, collapse='\\\\')
-    new_s = sprintf('\\makecell[l]{%s}', tmp_s)}
-  else
-    new_s = s0
-  return(new_s)
-}
-
-
+# string_to_makecell_old = function(s0, l=45){
+#   if(str_detect(s0, '\n')){
+#     S = str_split_1(s0, '\n')
+#     tmp_s = paste0(S, collapse='\\\\')
+#     new_s = sprintf('\\makecell[l]{%s}', tmp_s)}
+#   else if(!is.null(l) && str_length(s0) > l){
+#     starts = seq(1, str_length(s0), l)
+#     ends = starts + l - 1
+#     S = str_sub(s0, starts, ends)
+#     tmp_s = paste0(S, collapse='\\\\')
+#     new_s = sprintf('\\makecell[l]{%s}', tmp_s)}
+#   else
+#     new_s = s0
+#   return(new_s)
+# }

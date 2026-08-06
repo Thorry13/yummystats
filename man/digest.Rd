@@ -21,6 +21,6 @@ It saves the results internally so it can be used later with minimal arguments.
 \examples{
 data = tibble::rownames_to_column(iris, 'fid')
 gourmex = mount(c('Sepal.Length', 'Species'), id_cols='fid')
-gourmex = gourmex \%>\% ingest(data)
+gourmex = ingest(gourmex, data)
 
 }

@@ -9,6 +9,7 @@
 #'
 #'
 #' @return A Gourmex with shaped statistical information (ready for dispatch).
+#' @importFrom rlang .data .env
 #' @export
 #'
 #' @examples
@@ -22,11 +23,11 @@ shape = function(gourmex){
   # shaped = sapply(gourmex$types$var, function(var){
   for(var in gourmex$types$var){
     df_shaped = gourmex$storage$stats[[var]]
-    var_type = gourmex$types %>% filter(var == .env$var) %>% pull(var_type)
-    stat_ids = params_formats %>% filter(var_type == .env$var_type) %>% pull(stat_id)
+    var_type = gourmex$types %>% filter(.data$var == .env$var) %>% pull(.data$var_type)
+    stat_ids = params_formats %>% filter(.data$var_type == .env$var_type) %>% pull(.data$stat_id)
 
     for(stat_id in stat_ids){
-      current_stat = stats_formats %>% filter(stat_id == .env$stat_id)
+      current_stat = stats_formats %>% filter(.data$stat_id == .env$stat_id)
       stat_name = current_stat$stat_name
       format_func = current_stat$format_func[[1]]
 
@@ -45,6 +46,3 @@ shape = function(gourmex){
   # W3.3
   return(gourmex)
 }
-
-
-

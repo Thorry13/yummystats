@@ -9,8 +9,7 @@ Authors@R: c(
       role = c("aut", "cre")
     )
   )
-Description: More about what it does (maybe more than one line).
-    Continuation lines should be indented.
+Description: This package provides a toolbox to quickly summarize your data in a nice custom layout. It starts applying statistical functions which depend on the variable type (categorical, logical, numerical), before formatting figures and displaying them as you wish.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -19,6 +18,7 @@ BugReports: https://github.com/Thorry13/yummystats/issues
 Imports: 
     dplyr,
     gtsummary,
+    magrittr,
     rstatix,
     tibble,
     tidyr
