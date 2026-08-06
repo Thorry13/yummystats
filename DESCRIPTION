@@ -16,10 +16,14 @@ LazyData: true
 URL: https://github.com/Thorry13/yummystats
 BugReports: https://github.com/Thorry13/yummystats/issues
 Imports: 
+    data.table,
     dplyr,
     gtsummary,
     magrittr,
+    rlang,
     rstatix,
+    stats,
+    stringr,
     tibble,
     tidyr
 Suggests: 
