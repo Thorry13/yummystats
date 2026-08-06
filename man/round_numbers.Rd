@@ -43,7 +43,7 @@ in this environment of functions.
 V = c(3.3,33.3,13.4)
 round_numbers(V)
 round_numbers(V, precision=10)
-round_numbers(V, total_consistency=T)
-round_numbers(V, precision=5, keep_low_numbers=T)
-round_numbers(V, precision=5, keep_low_numbers=T, low_limit=3)
+round_numbers(V, total_consistency=TRUE)
+round_numbers(V, precision=5, keep_low_numbers=TRUE)
+round_numbers(V, precision=5, keep_low_numbers=TRUE, low_limit=3)
 }

@@ -204,7 +204,7 @@ stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NU
         # Calculate p-value
         df_stat = inputs_filtered %>%
           mutate(V = TRUE) %>%
-          pivot_wider(names_from = all_of(var), values_from=.data$V, names_sort = T) %>% # Pivoting to convert level as a logical variable
+          pivot_wider(names_from = all_of(var), values_from=all_of('V'), names_sort = T) %>% # Pivoting to convert level as a logical variable
           mutate(across(-all_of(c(by, id_cols, 'id_', strata_var)), ~replace_na(.x, FALSE))) %>%
           group_by(across(all_of(strata_var))) %>%
           summarize(across(-all_of(c(id_cols, by, 'id_')),
@@ -239,7 +239,7 @@ stat_pvalue = function(gourmex, var, stat_name='p_value', by=NULL, strata_var=NU
       df_stat = inputs_filtered %>%
         group_by(across(all_of(strata_var))) %>%
         myanova_test(as.formula(f)) %>%
-        rename(!!stat_name := .data$p) %>%
+        rename(!!stat_name := p) %>%
         select(all_of(c(strata_var, stat_name))) %>%
         distinct()
       # p = do.call('anova_test', list(inputs_filtered, as.formula(f)))$p
@@ -286,9 +286,9 @@ stat_numeric = function(gourmex, var, stat_name, suffix=NULL, by=NULL){
       SE = std/sqrt(n),
       CI95 = qnorm(0.975)*SE,
       min = min(.data[[var]], na.rm=T),
-      q1 = quantile(.data[[var]], 0.25, na.rm=T),
+      q1 = quantile(.data[[var]], 0.25, na.rm=T, names=FALSE),
       median = median(.data[[var]], na.rm=T),
-      q3= quantile(.data[[var]], 0.75, na.rm=T),
+      q3= quantile(.data[[var]], 0.75, na.rm=T, names=FALSE),
       max = max(.data[[var]], na.rm=T)
     ) %>%
     select(-n) %>%

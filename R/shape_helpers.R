@@ -19,9 +19,9 @@
 #' V = c(3.3,33.3,13.4)
 #' round_numbers(V)
 #' round_numbers(V, precision=10)
-#' round_numbers(V, total_consistency=T)
-#' round_numbers(V, precision=5, keep_low_numbers=T)
-#' round_numbers(V, precision=5, keep_low_numbers=T, low_limit=3)
+#' round_numbers(V, total_consistency=TRUE)
+#' round_numbers(V, precision=5, keep_low_numbers=TRUE)
+#' round_numbers(V, precision=5, keep_low_numbers=TRUE, low_limit=3)
 round_numbers = function(V, precision = 1, total_consistency = FALSE, keep_low_numbers = FALSE, low_limit=NULL){
   if(is.null(precision))
     return(as.numeric(V))
@@ -133,11 +133,12 @@ format_perc = function(V, precision=1, digits=0, sumTo100=F, add_sign=F){
 #' keep the previous values.
 #'
 #' @return A character vector with the translated terms.
+#'
 #' @importFrom data.table :=
 #' @export
 #'
 #' @examples
-#' df_dict = tibble(low=letters, up=LETTERS)
+#' df_dict = tibble::tibble(low=letters, up=LETTERS)
 #' V = sample(letters, 5, replace=TRUE)
 #' format_categorical(V, df_dict, from='low', to='up')
 format_categorical = function(V, df_dict, .fn = NULL, from='id', to='label', default=NULL, unmatched=NULL){

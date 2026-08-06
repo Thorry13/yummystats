@@ -35,7 +35,7 @@ A character vector with the translated terms.
 Translate terms following a given dictionary.
 }
 \examples{
-df_dict = tibble(low=letters, up=LETTERS)
+df_dict = tibble::tibble(low=letters, up=LETTERS)
 V = sample(letters, 5, replace=TRUE)
 format_categorical(V, df_dict, from='low', to='up')
 }

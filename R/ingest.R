@@ -98,7 +98,7 @@ chew = function(gourmex, var){
         mutate(all_na = all(is.na(.data[[var]]))) %>%
         ungroup() %>%
         filter(!is.na(.data[[var]]) | .data$all_na) %>%
-        select(-.data$all_na) %>%
+        select(-all_of('all_na')) %>%
         distinct()
 
       # Simplify dataframe

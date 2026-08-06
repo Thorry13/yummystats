@@ -124,7 +124,7 @@ test_that("good separation for each strata", {
       digest()
 
     for(var in vars){
-      A = gourmex3$storage$stats[[var]] %>% filter(location == strata) %>% select(-location) %>% distinct()
+      A = gourmex3$storage$stats[[var]] %>% filter(location == strata) %>% select(-location) %>% distinct() %>% as.data.frame()
       B = gourmex_strata$storage$stats[[var]]
       expect_identical(A,B)
     }
