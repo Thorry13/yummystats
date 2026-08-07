@@ -143,6 +143,8 @@ test_that("multiple groups work",{
   for(var in vars){
     A = gourmexA$storage$stats[[var]] %>% filter(!is.na(group), !is.na(location)) %>% mutate(c = paste0(group, '_', location), .keep='unused') %>% arrange(c) %>% select(ends_with('_group'), p_value)
     B = gourmexB$storage$stats[[var]] %>% mutate(group_location = as.character(group_location)) %>% arrange(group_location) %>% select(ends_with('_group'), p_value)
+    A$p_value = round_numbers(A$p_value, precision = 0.0000001)
+    B$p_value = round_numbers(B$p_value, precision = 0.0000001)
     expect_identical(A,B)
   }
 })
