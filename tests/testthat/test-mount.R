@@ -1,11 +1,13 @@
 vars = c('age', 'gender', 'happy', 'symptoms')
 
 test_that("basic mount", {
-  gourmex = mount(vars, 'id')
+  gourmex = mount(vars, 'id', params=myparams)
   expect_equal(class(gourmex), 'gourmex')
   expect_equal(names(gourmex), c('storage', 'params'))
   expect_equal(gourmex$params$id_cols, 'id')
   expect_equal(gourmex$params$vars, vars)
+  expect_false(is.null(gourmex$params$stats))
+  expect_false(is.null(gourmex$params$shapes))
 })
 
 

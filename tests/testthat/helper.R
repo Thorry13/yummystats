@@ -131,12 +131,12 @@ shapes_num_gp = list(
   q3_group = \(x) style_number(x, 1)
 )
 
-A = tibble(var_type = 'categorical', stat_name = names(shapes_cat), stat_func = unname(shapes_cat))
-B = tibble(var_type = 'logical', stat_name = names(shapes_logic), stat_func = unname(shapes_logic))
-C = tibble(var_type = 'numerical', stat_name = names(shapes_num), stat_func = unname(shapes_num))
-A_gp = tibble(var_type = 'categorical', stat_name = names(shapes_cat_gp), stat_func = unname(shapes_cat_gp))
-B_gp = tibble(var_type = 'logical', stat_name = names(shapes_logic_gp), stat_func = unname(shapes_logic_gp))
-C_gp = tibble(var_type = 'numerical', stat_name = names(shapes_num_gp), stat_func = unname(shapes_num_gp))
+A = tibble(var_type = 'categorical', stat_name = names(shapes_cat), shape_func = unname(shapes_cat))
+B = tibble(var_type = 'logical', stat_name = names(shapes_logic), shape_func = unname(shapes_logic))
+C = tibble(var_type = 'numerical', stat_name = names(shapes_num), shape_func = unname(shapes_num))
+A_gp = tibble(var_type = 'categorical', stat_name = names(shapes_cat_gp), shape_func = unname(shapes_cat_gp))
+B_gp = tibble(var_type = 'logical', stat_name = names(shapes_logic_gp), shape_func = unname(shapes_logic_gp))
+C_gp = tibble(var_type = 'numerical', stat_name = names(shapes_num_gp), shape_func = unname(shapes_num_gp))
 
 shapes = bind_rows(A,B,C)
 shapes_gp = bind_rows(A_gp,B_gp,C_gp)

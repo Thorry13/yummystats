@@ -41,7 +41,7 @@ mount = function(vars, id_cols, group_cols=NULL, strata_cols=NULL, params=NULL){
   gourmex$params$strata_cols = strata_cols
 
   gourmex$params$stats = params$stats
-  gourmex$params$formats = params$formats
+  gourmex$params$shapes = params$shapes
   gourmex$params$layout = params$layout
 
   return(gourmex)
