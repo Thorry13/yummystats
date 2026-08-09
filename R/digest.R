@@ -14,8 +14,9 @@
 #'
 #' @examples
 #' data = tibble::rownames_to_column(iris, 'fid')
-#' gourmex = mount(c('Sepal.Length', 'Species'), id_cols='fid')
+#' gourmex = mount(c('Sepal.Length', 'Species'), id_cols='fid', params=default_params())
 #' gourmex = ingest(gourmex, data)
+#' gourmex = digest(gourmex)
 #'
 digest = function(gourmex){
   params_stats = reduce_params(gourmex$params$stats) # W2.1

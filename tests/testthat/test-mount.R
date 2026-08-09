@@ -1,4 +1,5 @@
 vars = c('age', 'gender', 'happy', 'symptoms')
+myparams = default_params()
 
 test_that("basic mount", {
   gourmex = mount(vars, 'id', params=myparams)

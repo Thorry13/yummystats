@@ -1,4 +1,6 @@
 vars = c('gender', 'happy', 'occupation', 'symptoms', 'age')
+myparams0 = default_params()
+myparams = default_params(grouped=TRUE)
 
 test_that("params reduction works", {
   params = rbind(myparams$stats, myparams$stats) # Introduce double entries
@@ -9,6 +11,7 @@ test_that("params reduction works", {
 
 
 test_that("check digestion", {
+  df_test = generate_test_data(100)
   gourmex = mount(vars, 'id', params=myparams0) %>%
     ingest(df_test) %>%
     digest()
@@ -31,6 +34,7 @@ test_that("check digestion", {
 
 
 test_that("check digestion with groups", {
+  df_test = generate_test_data(1000)
   gourmex = mount(vars, 'id', group_cols = 'group', params=myparams) %>%
     ingest(df_test) %>%
     digest()
@@ -55,6 +59,7 @@ test_that("check digestion with groups", {
 
 
 test_that("check digestion with multiple group cols", {
+  df_test = generate_test_data(5000)
   gourmex = mount(vars, 'id', group_cols = c('group', 'location'), params=myparams) %>%
     ingest(df_test) %>%
     digest()
@@ -79,6 +84,7 @@ test_that("check digestion with multiple group cols", {
 
 
 test_that("check digestion with stratas", {
+  df_test = generate_test_data(15000)
   gourmex = mount(vars, 'id', group_cols = 'group', strata_cols='location', params=myparams) %>%
     ingest(df_test) %>%
     digest()
@@ -101,6 +107,7 @@ test_that("check digestion with stratas", {
 })
 
 test_that("check digestion with stratas", {
+  df_test = generate_test_data(15000)
   vars2 = setdiff(vars, 'gender')
   gourmex = mount(vars2, 'id', group_cols = 'group', strata_cols=c('gender', 'location'), params=myparams) %>%
     ingest(df_test) %>%

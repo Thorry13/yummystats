@@ -1,4 +1,4 @@
-
+myparams = default_params(grouped=TRUE)
 test_that("params reduction works", {
   params = rbind(myparams$shapes, myparams$shapes) # Introduce double entries
   expect_false(check_unicity(params %>% mutate(i=row_number()), var = 'i',  id_cols = c('var_type', 'stat_name')))
@@ -6,6 +6,8 @@ test_that("params reduction works", {
   expect_true(check_unicity(new_params %>% mutate(i=row_number()), var = 'i', id_cols = c('var_type', 'stat_name')))
 })
 
+vars = c('gender', 'happy', 'occupation', 'symptoms', 'age')
+df_test = generate_test_data(500)
 gourmex = mount(vars, 'id', 'group', params=myparams) %>%
   ingest(df_test) %>%
   digest()
@@ -14,8 +16,8 @@ test_that("shaping works", {
   vars = c('gender', 'happy', 'occupation', 'symptoms', 'age')
   gourmex = shape(gourmex)
 
-  expect_true(!is.null(gourmex2$storage$shaped))
-  expect_equal(names(gourmex2$storage$shaped), vars)
+  expect_true(!is.null(gourmex$storage$shaped))
+  expect_equal(names(gourmex$storage$shaped), vars)
 
 
   num_stats = c('mean', 'std', 'SE', 'CI95', 'min', 'q1', 'median', 'q3', 'max')

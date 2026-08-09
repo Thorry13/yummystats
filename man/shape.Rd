@@ -6,6 +6,9 @@
 \usage{
 shape(gourmex)
 }
+\arguments{
+\item{gourmex}{Gourmex ready for shaping.}
+}
 \value{
 A Gourmex with shaped statistical information (ready for dispatch).
 }
@@ -15,4 +18,12 @@ they usually need to be formatted to be more human-friendly.
 
 This can be done through this shaping operation. It will transform each
 statistical column independently, usually into character vectors.
+}
+\examples{
+data = tibble::rownames_to_column(iris, 'fid')
+gourmex = mount(c('Sepal.Length', 'Species'), id_cols='fid', params=default_params())
+gourmex = ingest(gourmex, data)
+gourmex = digest(gourmex)
+gourmex = shape(gourmex)
+
 }

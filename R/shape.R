@@ -7,12 +7,18 @@
 #' This can be done through this shaping operation. It will transform each
 #' statistical column independently, usually into character vectors.
 #'
+#' @param gourmex Gourmex ready for shaping.
 #'
 #' @return A Gourmex with shaped statistical information (ready for dispatch).
 #' @importFrom rlang .data .env
 #' @export
 #'
 #' @examples
+#' data = tibble::rownames_to_column(iris, 'fid')
+#' gourmex = mount(c('Sepal.Length', 'Species'), id_cols='fid', params=default_params())
+#' gourmex = ingest(gourmex, data)
+#' gourmex = digest(gourmex)
+#' gourmex = shape(gourmex)
 #'
 shape = function(gourmex){
   # W3.1
