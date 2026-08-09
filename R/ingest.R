@@ -54,7 +54,7 @@ swallow = function(gourmex){
   for(var in gourmex$params$vars){
     chewed = chew(gourmex, var) # W1.1
     gourmex$storage$chewed[[var]] = chewed$chewed # W2.1
-    gourmex$storage$stats[[var]] = chewed$stats # W2.1
+    gourmex$storage$stats[[var]] = chewed$stats %>% mutate(variable = var) # W2.1
   }
 
   return(gourmex)
