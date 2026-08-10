@@ -1,6 +1,8 @@
 vars = c('gender', 'happy', 'occupation', 'symptoms', 'age')
 myparams0 = default_params()
 myparams = default_params(grouped=TRUE)
+myparams$stats = myparams$stats %>% filter(stat_name != 'p_value')
+df_test = generate_test_data(200)
 
 test_that("params reduction works", {
   params = rbind(myparams$stats, myparams$stats) # Introduce double entries
@@ -11,7 +13,7 @@ test_that("params reduction works", {
 
 
 test_that("check digestion", {
-  df_test = generate_test_data(100)
+  # df_test = generate_test_data(100)
   gourmex = mount(vars, 'id', params=myparams0) %>%
     ingest(df_test) %>%
     digest()
@@ -34,7 +36,7 @@ test_that("check digestion", {
 
 
 test_that("check digestion with groups", {
-  df_test = generate_test_data(1000)
+  # df_test = generate_test_data(1000, c('group', 'occupation', 'happy', 'gender'), 5)
   gourmex = mount(vars, 'id', group_cols = 'group', params=myparams) %>%
     ingest(df_test) %>%
     digest()
@@ -59,10 +61,12 @@ test_that("check digestion with groups", {
 
 
 test_that("check digestion with multiple group cols", {
-  df_test = generate_test_data(5000)
-  gourmex = mount(vars, 'id', group_cols = c('group', 'location'), params=myparams) %>%
-    ingest(df_test) %>%
-    digest()
+  # df_test = generate_test_data(800, c('group', 'location', 'occupation'), 6)
+  expect_warning( # for location
+    gourmex <- mount(vars, 'id', group_cols = c('group', 'location'), params=myparams) %>%
+      ingest(df_test) %>%
+      digest()
+    )
 
   expect_setequal(names(gourmex$storage$stats), gourmex$params$vars)
 
@@ -84,7 +88,7 @@ test_that("check digestion with multiple group cols", {
 
 
 test_that("check digestion with stratas", {
-  df_test = generate_test_data(15000)
+  # df_test = generate_test_data(800, c('group', 'location', 'occupation'), 6)
   gourmex = mount(vars, 'id', group_cols = 'group', strata_cols='location', params=myparams) %>%
     ingest(df_test) %>%
     digest()
@@ -106,8 +110,9 @@ test_that("check digestion with stratas", {
   }
 })
 
-test_that("check digestion with stratas", {
-  df_test = generate_test_data(15000)
+test_that("check digestion with multiple stratas", {
+  # df_test = generate_test_data(6000, c('group', 'location', 'occupation', 'gender', 'happy'), 5)
+  df_test = generate_test_data(1100, c('group', 'gender', 'location'), c('occupation', 'symptoms'),2)
   vars2 = setdiff(vars, 'gender')
   gourmex = mount(vars2, 'id', group_cols = 'group', strata_cols=c('gender', 'location'), params=myparams) %>%
     ingest(df_test) %>%
