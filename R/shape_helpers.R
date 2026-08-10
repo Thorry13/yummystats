@@ -135,6 +135,7 @@ format_perc = function(V, precision=1, digits=0, sumTo100=F, add_sign=F){
 #' @return A character vector with the translated terms.
 #'
 #' @importFrom data.table :=
+#' @importFrom tibble tibble
 #' @export
 #'
 #' @examples

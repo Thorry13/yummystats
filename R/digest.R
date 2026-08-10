@@ -10,6 +10,7 @@
 #'
 #' @returns A Gourmex ready for shaping.
 #' @importFrom rlang .data .env
+#' @importFrom tibble rownames_to_column
 #' @export
 #'
 #' @examples

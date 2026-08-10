@@ -19,10 +19,12 @@ Imports:
     data.table,
     dplyr,
     gtsummary,
+    purrr,
     rlang,
     rstatix,
     stats,
     stringr,
+    tibble,
     tidyr
 Suggests: 
     knitr,

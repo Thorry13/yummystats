@@ -11,6 +11,7 @@
 #'
 #' @return A Gourmex with shaped statistical information (ready for dispatch).
 #' @importFrom rlang .data .env
+#' @importFrom tibble tibble rownames_to_column
 #' @export
 #'
 #' @examples
@@ -43,8 +44,11 @@ shape = function(gourmex){
           ungroup() %>%
           mutate(across(all_of(stat_name), shape_func)) %>%
           group_by(across(all_of(group_vars(df_shaped))))
-      else
+      else if(stat_name %in% names(df_shaped))
         df_shaped = df_shaped %>% mutate(across(all_of(stat_name), shape_func))
+      else{
+        warning(sprintf("Couldn't shape stat `%s` because it wasn't calculated during digestion.", stat_name))
+      }
     }
     gourmex$storage$shaped[[var]] = df_shaped
   }
