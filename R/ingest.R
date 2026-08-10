@@ -12,6 +12,7 @@
 #' @param data The data to ingest.
 #'
 #' @returns Gourmex object ready for digestion.
+#' @importFrom tibble rownames_to_column
 #' @export
 #'
 #' @examples
@@ -30,6 +31,16 @@ ingest = function(gourmex, data){
 
 
 introduce = function(gourmex, data){
+  # Manage NAs for groups
+  if(!is.null(gourmex$params$group_cols)){
+    for(col in gourmex$params$group_cols){
+      if(any(is.na(data[[col]]))){
+        warning(sprintf('Detected and removed observations with NA values for group %s. ', col))
+        data = data %>% filter(!is.na(.data[[col]]))
+      }
+    }
+  }
+
   gourmex$storage$raw = data
 
   gourmex$types = tibble(var=gourmex$params$vars) %>%
@@ -132,7 +143,8 @@ chew = function(gourmex, var){
   }
   else{
     # W1.1.3
-    stats = chewed %>% select(all_of(group_cols)) %>% distinct()
+    stats = chewed %>% select(all_of(group_cols)) %>% distinct() %>%
+      complete(!!!syms(group_cols))
   }
 
   return(list(
