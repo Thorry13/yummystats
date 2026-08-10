@@ -13,7 +13,6 @@ gourmex = mount(vars, 'id', 'group', params=myparams) %>%
   digest()
 
 test_that("shaping works", {
-  vars = c('gender', 'happy', 'occupation', 'symptoms', 'age')
   gourmex = shape(gourmex)
 
   expect_true(!is.null(gourmex$storage$shaped))
@@ -32,4 +31,28 @@ test_that("shaping works", {
       stat_names = stat_names %>% setdiff('num_stats_group') %>% c(num_stats_group)
     expect_all_true(stat_names %in% names(gourmex$storage$stats[[var]]))
   }
+})
+
+
+test_that("reshaping works", {
+  gourmex = shape(gourmex)
+
+  labels = c('Gender', 'Is happy', 'Occupation', 'Symptoms', 'Age')
+  df_dict = data.frame(var=vars, label=labels)
+  f = list(\(x) format_categorical(x, df_dict, from='var', to='label'))
+  new_shape = tibble(var_type=c('categorical', 'logical', 'numerical'), stat_name='variable', shape_func=f)
+  gourmex$params$shapes = bind_rows(gourmex$params$shapes, new_shape)
+
+  gourmex2 = shape(gourmex)
+  expect_equal(dim(gourmex$storage$shaped), dim(gourmex2$storage$shaped))
+})
+
+test_that("warning throws if no associated stat", {
+  myparams$stats = myparams$stats %>% filter(stat_name != 'p_value')
+  gourmex = mount(vars, 'id', 'group', params=myparams) %>%
+    ingest(df_test) %>%
+    digest()
+
+  warning = unique(capture_warnings(shape(gourmex)))
+  expect_true(str_detect(warning, "Couldn't shape"))
 })
