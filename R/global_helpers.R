@@ -123,7 +123,8 @@ default_params = function(grouped=FALSE){
     min_group = \(x) style_number(x, 1),
     max_group = \(x) style_number(x, 1),
     q1_group = \(x) style_number(x, 1),
-    q3_group = \(x) style_number(x, 1)
+    q3_group = \(x) style_number(x, 1),
+    p_value = style_pvalue
   )
 
   A = tibble(var_type = 'categorical', stat_name = names(shapes_cat), shape_func = unname(shapes_cat))
@@ -153,13 +154,13 @@ default_params = function(grouped=FALSE){
     "Variable" = "{variable}",
     "Label" = "{level}, N(%)",
     "Données disponibles" = "{n_avail}",
-    "{pivot_col}" = "{str_replace(sprintf('%s (%s)', n_level_group, p_level_group), fixed('NA (0)'), '-')}",
+    "{.pivot}" = "{str_replace(sprintf('%s (%s)', n_level_group, p_level_group), fixed('NA (0)'), '-')}",
     "Total, N={N}" = "{n_level} ({p_level})",
     "p-value" = "{p_value}"
   )
 
   template_logic = tibble(
-    var_type = 'variable',
+    var_type = 'logical',
     "Variable" = "{variable}",
     "Label" = "N(%)",
     "Données disponibles" = "{n_avail}",
@@ -170,7 +171,7 @@ default_params = function(grouped=FALSE){
     "Variable" = "{variable}",
     "Label" = "N(%)",
     "Données disponibles" = "{n_avail}",
-    "{pivot_col}" = "{str_replace(sprintf('%s (%s)', n_level_group, p_level_group), fixed('NA (0)'), '-')}",
+    "{.pivot}" = "{str_replace(sprintf('%s (%s)', n_level_group, p_level_group), fixed('NA (0)'), '-')}",
     "Total, N={N}" = "{n_level} ({p_level})",
     "p-value" = "{p_value}"
   )
@@ -187,7 +188,7 @@ default_params = function(grouped=FALSE){
     "Variable" = "{variable}",
     "Label" = c("Med.[Q1;Q3](Min;Max)","Moy. ± CI95%"),
     "Données disponibles" = "{n_avail}",
-    "{pivot_col}" = c("{median_group} [{q1_group};{q3_group}] ({min_group},{max_group})", "{mean_group} ± {CI95_group}"),
+    "{.pivot}" = c("{median_group} [{q1_group};{q3_group}] ({min_group},{max_group})", "{mean_group} ± {CI95_group}"),
     "Total, N={N}" = c("{median} [{q1};{q3}] ({min},{max})", "{mean} ± {CI95}"),
     "p-value" = c("", "{p_value}")
   )
@@ -200,7 +201,8 @@ default_params = function(grouped=FALSE){
 
   myparams$layout = list()
   myparams$layout$template = full_template_group
-  myparams$layout$pivot_col = sprintf('{group}, N={N_group}')
+  myparams$layout$pivot_sep = '_'
+  myparams$layout$pivot_glue = sprintf('{.pivot}, N={N_group}')
 
   if(grouped)
     return(myparams)
