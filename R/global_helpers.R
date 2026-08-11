@@ -146,14 +146,14 @@ default_params = function(grouped=FALSE){
     var_type = 'categorical',
     "Variable" = "{variable}",
     "Label" = "{level}, N(%)",
-    "Données disponibles" = "{n_avail}",
+    "Donn\u00e9es disponibles" = "{n_avail}",
     "Total, N={N}" = "{n_level} ({p_level})",
   )
   template_cat_group = tibble(
     var_type = 'categorical',
     "Variable" = "{variable}",
     "Label" = "{level}, N(%)",
-    "Données disponibles" = "{n_avail}",
+    "Donn\u00e9es disponibles" = "{n_avail}",
     "{.pivot}" = "{str_replace(sprintf('%s (%s)', n_level_group, p_level_group), fixed('NA (0)'), '-')}",
     "Total, N={N}" = "{n_level} ({p_level})",
     "p-value" = "{p_value}"
@@ -163,14 +163,14 @@ default_params = function(grouped=FALSE){
     var_type = 'logical',
     "Variable" = "{variable}",
     "Label" = "N(%)",
-    "Données disponibles" = "{n_avail}",
+    "Donn\u00e9es disponibles" = "{n_avail}",
     "Total, N={N}" = "{n_level} ({p_level})",
   )
   template_logic_group = tibble(
     var_type = 'logical',
     "Variable" = "{variable}",
     "Label" = "N(%)",
-    "Données disponibles" = "{n_avail}",
+    "Donn\u00e9es disponibles" = "{n_avail}",
     "{.pivot}" = "{str_replace(sprintf('%s (%s)', n_level_group, p_level_group), fixed('NA (0)'), '-')}",
     "Total, N={N}" = "{n_level} ({p_level})",
     "p-value" = "{p_value}"
@@ -179,17 +179,17 @@ default_params = function(grouped=FALSE){
   template_num = tibble(
     var_type = 'numerical',
     "Variable" = "{variable}",
-    "Label" = c("Med.[Q1;Q3](Min;Max)","Moy. ± CI95%"),
-    "Données disponibles" = "{n_avail}",
-    "Total, N={N}" = c("{median} [{q1};{q3}] ({min},{max})", "{mean} ± {CI95}")
+    "Label" = c("Med.[Q1;Q3](Min;Max)","Moy. \u00b1 CI95%"),
+    "Donn\u00e9es disponibles" = "{n_avail}",
+    "Total, N={N}" = c("{median} [{q1};{q3}] ({min},{max})", "{mean} \u00b1 {CI95}")
   )
   template_num_group = tibble(
     var_type = 'numerical',
     "Variable" = "{variable}",
-    "Label" = c("Med.[Q1;Q3](Min;Max)","Moy. ± CI95%"),
-    "Données disponibles" = "{n_avail}",
-    "{.pivot}" = c("{median_group} [{q1_group};{q3_group}] ({min_group},{max_group})", "{mean_group} ± {CI95_group}"),
-    "Total, N={N}" = c("{median} [{q1};{q3}] ({min},{max})", "{mean} ± {CI95}"),
+    "Label" = c("Med.[Q1;Q3](Min;Max)","Moy. \u00b1 CI95%"),
+    "Donn\u00e9es disponibles" = "{n_avail}",
+    "{.pivot}" = c("{median_group} [{q1_group};{q3_group}] ({min_group},{max_group})", "{mean_group} \u00b1 {CI95_group}"),
+    "Total, N={N}" = c("{median} [{q1};{q3}] ({min},{max})", "{mean} \u00b1 {CI95}"),
     "p-value" = c("", "{p_value}")
   )
 
