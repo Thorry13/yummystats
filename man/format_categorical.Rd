@@ -7,11 +7,11 @@
 format_categorical(
   V,
   df_dict,
-  .fn = NULL,
   from = "id",
   to = "label",
   default = NULL,
-  unmatched = NULL
+  unmatched = NULL,
+  .fn = NULL
 )
 }
 \arguments{
@@ -19,14 +19,16 @@ format_categorical(
 
 \item{df_dict}{A data frame used as a dictionary (columns=var, rname, label, group).}
 
-\item{.fn}{is applied finally on the translated terms.}
-
 \item{from}{Reference for origin column.}
 
 \item{to}{Reference for destination column.}
 
-\item{default}{Default value if no correspondance was found in \emph{df_dict}. If NULL,
-keep the previous values.}
+\item{default}{Default value for NAs. If NULL, keep the original values.}
+
+\item{unmatched}{Default value if no correspondance was found in \emph{df_dict}.
+If NULL, keep the previous values.}
+
+\item{.fn}{is applied finally on the translated terms.}
 }
 \value{
 A character vector with the translated terms.

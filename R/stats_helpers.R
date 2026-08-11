@@ -28,9 +28,10 @@ stat_total = function(gourmex, var, stat_name='N', by=NULL){
 #' Extend the statistics with percentage column named `stat_name`.
 #'
 #' @param gourmex A `gourmex` object.
+#' @param var The variable to compute statistic on.
+#' @param stat_name indicates how the percentage column should be named.
 #' @param numerator_col The numerator.
 #' @param denominator_col The denominator. If NULL, the sum of the `count_col` column is used as `total_col`.
-#' @param stat_name indicates how the percentage column should be named.
 #' @param by is used as grouping variables.
 #'
 #' @return A dataframe with the required percentages.
@@ -100,6 +101,7 @@ stat_n_avail = function(gourmex, var, stat_name="n_avail", by=NULL){
 #'
 #' @param gourmex A `gourmex` object.
 #' @param var The column name of `df` where nan values can be detected.
+#' @param stat_name indicates how the column reporting the number of available data should be named.
 #' @param by is used as grouping variables
 #'
 #' @importFrom data.table :=

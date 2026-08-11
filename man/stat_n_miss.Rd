@@ -11,6 +11,8 @@ stat_n_miss(gourmex, var, stat_name = "n_miss", by = NULL)
 
 \item{var}{The column name of \code{df} where nan values can be detected.}
 
+\item{stat_name}{indicates how the column reporting the number of available data should be named.}
+
 \item{by}{is used as grouping variables}
 }
 \value{

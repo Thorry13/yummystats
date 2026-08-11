@@ -16,13 +16,15 @@ stat_perc(
 \arguments{
 \item{gourmex}{A \code{gourmex} object.}
 
+\item{var}{The variable to compute statistic on.}
+
 \item{stat_name}{indicates how the percentage column should be named.}
 
 \item{numerator_col}{The numerator.}
 
 \item{denominator_col}{The denominator. If NULL, the sum of the \code{count_col} column is used as \code{total_col}.}
 
-\item{by}{is used as grouping variables.}
+\item{by}{is used as grouping variables.x}
 }
 \value{
 A dataframe with the required percentages.

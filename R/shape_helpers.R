@@ -128,9 +128,10 @@ format_perc = function(V, precision=1, digits=0, sumTo100=F, add_sign=F){
 #' @param df_dict A data frame used as a dictionary (columns=var, rname, label, group).
 #' @param from Reference for origin column.
 #' @param to Reference for destination column.
+#' @param default Default value for NAs. If NULL, keep the original values.
+#' @param unmatched Default value if no correspondance was found in *df_dict*.
+#' If NULL, keep the previous values.
 #' @param .fn is applied finally on the translated terms.
-#' @param default Default value if no correspondance was found in *df_dict*. If NULL,
-#' keep the previous values.
 #'
 #' @return A character vector with the translated terms.
 #'
@@ -142,7 +143,7 @@ format_perc = function(V, precision=1, digits=0, sumTo100=F, add_sign=F){
 #' df_dict = tibble::tibble(low=letters, up=LETTERS)
 #' V = sample(letters, 5, replace=TRUE)
 #' format_categorical(V, df_dict, from='low', to='up')
-format_categorical = function(V, df_dict, .fn = NULL, from='id', to='label', default=NULL, unmatched=NULL){
+format_categorical = function(V, df_dict, from='id', to='label', default=NULL, unmatched=NULL, .fn = NULL){
   na_positions = which(is.na(V))
   labels = data.frame(col=as.character(V)) %>%
     left_join(df_dict %>% mutate(!!from:=as.character(.data[[from]])), by=c(col=from)) %>%
@@ -164,7 +165,7 @@ format_categorical = function(V, df_dict, .fn = NULL, from='id', to='label', def
     labels[na_positions] = as.character(NA)
 
   if(is.factor(V)){
-    new_levels = format_categorical(levels(V), df_dict, .fn, from, to, default)
+    new_levels = format_categorical(levels(V), df_dict, from, to, default, unmatched, .fn)
     labels = factor(labels, levels=new_levels)
   }
 
