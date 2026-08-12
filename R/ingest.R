@@ -19,8 +19,6 @@
 #' data = tibble::rownames_to_column(iris, 'fid')
 #' gourmex = mount(c('Sepal.Length', 'Species'), id_cols='fid')
 #' gourmex = ingest(gourmex, data)
-#'
-#' @name ingestion
 ingest = function(gourmex, data){
   gourmex = gourmex %>%
     introduce(data) %>%

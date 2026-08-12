@@ -13,7 +13,7 @@
 #' Then Gourmex asks for a set of parameters (`params`) to know:
 #' - which stats to compute (`params$stats`).
 #' - how to format them for human reading (`params$shapes`).
-#' - how to combine them in the returned layout (`parmas$layout`).
+#' - how to combine them in the returned layout (`params$layout`).
 #'
 #' @param vars The variables to compute stats on.
 #' @param id_cols The columns used to identify observations.

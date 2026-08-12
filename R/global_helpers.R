@@ -7,7 +7,7 @@ check_unicity = function(df, var, id_cols=NULL, return_exceptions = FALSE, na.rm
     ungroup()
 
   if(return_exceptions)
-    return(checks %>% filter(n > 1) %>% select(all_of(id_cols), n)) %>% arrange(desc(n))
+    return(checks %>% filter(n > 1) %>% select(all_of(id_cols), n) %>% arrange(desc(n)))
   else
     return(!any(checks$n > 1))
 }
@@ -34,7 +34,7 @@ reduce_params = function(params){
 #'
 #' @examples
 #' params = default_params()
-#' gourmex = mount(iris, 'Species', params = params)
+#' gourmex = mount(c('Sepal.Length', 'Petal.Width'), 'Species', params = params)
 default_params = function(grouped=FALSE){
   stat_funcs_cat = list(
     N = expr(\(...) stat_total(..., by=gourmex$params$strata_cols)),

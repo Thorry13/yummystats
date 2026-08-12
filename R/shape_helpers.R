@@ -1,3 +1,6 @@
+#' @title Round numbers
+#'
+#' @description
 #' This is an advanced function to round numbers.
 #' It can apply a "smart rounding" taking all values into account instead of
 #' considering them independently to make it consistent with the total (e.g. percentages).

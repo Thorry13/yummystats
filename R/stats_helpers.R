@@ -32,7 +32,7 @@ stat_total = function(gourmex, var, stat_name='N', by=NULL){
 #' @param stat_name indicates how the percentage column should be named.
 #' @param numerator_col The numerator.
 #' @param denominator_col The denominator. If NULL, the sum of the `count_col` column is used as `total_col`.
-#' @param by is used as grouping variables.
+#' @param by Is used as grouping variables.
 #'
 #' @return A dataframe with the required percentages.
 stat_perc = function(gourmex, var, stat_name='p', numerator_col='n', denominator_col=NULL, by=NULL){
@@ -40,7 +40,7 @@ stat_perc = function(gourmex, var, stat_name='p', numerator_col='n', denominator
 
   # df_chewed = gourmex$storage$chewed[[var]]
   df_stat = gourmex$storage$stats[[var]]
-  var_type =gourmex$types %>% filter(var == .env$var) %>% pull(var_type)
+  var_type = gourmex$types %>% filter(var == .env$var) %>% pull(var_type)
 
   # Use grouping variables if necessary
   df_stat = df_stat %>% group_by(across(all_of(by)))
@@ -74,13 +74,13 @@ stat_perc = function(gourmex, var, stat_name='p', numerator_col='n', denominator
 #' @param gourmex A `gourmex` object.
 #' @param var The column name of `df` where nan values can be detected.
 #' @param stat_name indicates how the column reporting the number of available data should be named.
-#' @param by is used as grouping variables
+#' @param by Is used as grouping variables
 #'
 #' @return A dataframe with the required available values.
 stat_n_avail = function(gourmex, var, stat_name="n_avail", by=NULL){
   df_chewed = gourmex$storage$chewed[[var]]
   df_stat = gourmex$storage$stats[[var]]
-  var_type =gourmex$types %>% filter(var == .env$var) %>% pull(var_type)
+  var_type = gourmex$types %>% filter(var == .env$var) %>% pull(var_type)
 
   # Count available values
   df_stat = df_chewed %>%
@@ -102,7 +102,7 @@ stat_n_avail = function(gourmex, var, stat_name="n_avail", by=NULL){
 #' @param gourmex A `gourmex` object.
 #' @param var The column name of `df` where nan values can be detected.
 #' @param stat_name indicates how the column reporting the number of available data should be named.
-#' @param by is used as grouping variables
+#' @param by Is used as grouping variables
 #'
 #' @importFrom data.table :=
 #' @importFrom rlang .data .env
@@ -112,7 +112,7 @@ stat_n_miss = function(gourmex, var, stat_name='n_miss', by=NULL){
   # check_report_df(df)
   df_chewed = gourmex$storage$chewed[[var]]
   # df_stat = gourmex$storage$stats[[var]]
-  var_type =gourmex$types %>% filter(.data$var == .env$var) %>% pull(.data$var_type)
+  var_type = gourmex$types %>% filter(.data$var == .env$var) %>% pull(.data$var_type)
 
   # Count missing values
   df_stat = df_chewed %>%

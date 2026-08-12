@@ -6,7 +6,10 @@
 [![Codecov test coverage](https://codecov.io/gh/Thorry13/yummystats/graph/badge.svg)](https://app.codecov.io/gh/Thorry13/yummystats)
 <!-- badges: end -->
 
-The goal of yummystats is to ...
+yummystats is a toolbox for quickly summarizing data into clean, customizable tables. 
+It automatically applies the right statistical summary for each variable type 
+(categorical, logical, numerical), then lets you format and display the results 
+the way you want.
 
 ## Installation
 

@@ -2,7 +2,7 @@
 #'
 #' @param gourmex Gourmex ready for dispatch (shaping done).
 #'
-#' @returns Gourmex ready to watch
+#' @returns Gourmex ready to serve
 #'
 #' @importFrom purrr transpose
 #' @importFrom rlang .data .env

@@ -9,7 +9,7 @@ Authors@R: c(
       role = c("aut", "cre")
     )
   )
-Description: This package provides a toolbox to quickly summarize your data in a nice custom layout. It starts applying statistical functions which depend on the variable type (categorical, logical, numerical), before formatting figures and displaying them as you wish.
+Description: This package provides a toolbox to quickly summarize your data in a nice custom layout. It starts by applying statistical functions which depend on the variable type (categorical, logical, numerical), before formatting values and displaying them as you wish.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
