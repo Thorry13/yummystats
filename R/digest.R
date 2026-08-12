@@ -9,8 +9,6 @@
 #' @param gourmex A Gourmex object ready for digestion (ingestion done).
 #'
 #' @returns A Gourmex ready for shaping.
-#' @importFrom rlang .data .env
-#' @importFrom tibble rownames_to_column
 #' @export
 #'
 #' @examples

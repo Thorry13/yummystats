@@ -10,8 +10,6 @@
 #' @param gourmex Gourmex ready for shaping.
 #'
 #' @return A Gourmex with shaped statistical information (ready for dispatch).
-#' @importFrom rlang .data .env
-#' @importFrom tibble tibble rownames_to_column
 #' @export
 #'
 #' @examples

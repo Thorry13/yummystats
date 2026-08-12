@@ -5,8 +5,6 @@
 #' @returns Gourmex ready to serve
 #'
 #' @importFrom purrr transpose
-#' @importFrom rlang .data .env
-#' @importFrom tibble rownames_to_column
 #' @export
 #'
 #' @examples

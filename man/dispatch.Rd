@@ -10,7 +10,7 @@ dispatch(gourmex)
 \item{gourmex}{Gourmex ready for dispatch (shaping done).}
 }
 \value{
-Gourmex ready to watch
+Gourmex ready to serve
 }
 \description{
 Dispatch

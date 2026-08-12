@@ -12,7 +12,6 @@
 #' @param data The data to ingest.
 #'
 #' @returns Gourmex object ready for digestion.
-#' @importFrom tibble rownames_to_column
 #' @export
 #'
 #' @examples
@@ -70,9 +69,6 @@ swallow = function(gourmex){
 }
 
 
-#' @import dplyr tidyr
-#' @importFrom rlang .data .env
-#' @importFrom data.table :=
 chew = function(gourmex, var){
   # Rewrite unnest
   unnest = function(data, ...){
