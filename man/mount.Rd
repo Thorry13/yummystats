@@ -36,7 +36,7 @@ Then Gourmex asks for a set of parameters (\code{params}) to know:
 \itemize{
 \item which stats to compute (\code{params$stats}).
 \item how to format them for human reading (\code{params$shapes}).
-\item how to combine them in the returned layout (\code{parmas$layout}).
+\item how to combine them in the returned layout (\code{params$layout}).
 }
 }
 \examples{

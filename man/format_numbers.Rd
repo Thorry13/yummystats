@@ -4,14 +4,14 @@
 \alias{format_numbers}
 \title{Basic tool to format numbers}
 \usage{
-format_numbers(V, big.mark = "", digits = 0, lower_bound = NULL)
+format_numbers(x, big.mark = "", digits = 0, lower_bound = NULL)
 }
 \arguments{
-\item{V}{A numeric vector to format.}
+\item{x}{A numeric vector to format.}
 
-\item{big.mark}{Imported parameter.}
+\item{big.mark}{Passed to \code{formatC}.}
 
-\item{digits}{Imported parameter.}
+\item{digits}{Passed to \code{formatC}.}
 
 \item{lower_bound}{If not NULL, used as a threshold to hide values below.}
 }
@@ -22,6 +22,6 @@ A character vector with formatted numbers
 Basic tool to format numbers
 }
 \examples{
-V = c(13,52.1,2300,4)
-format_numbers(V, big.mark=',', digits=2, lower_bound=10)
+x = c(13,52.1,2300,4)
+format_numbers(x, big.mark=',', digits=2, lower_bound=10)
 }

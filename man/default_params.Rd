@@ -17,5 +17,5 @@ Load default parameters for Gourmex
 }
 \examples{
 params = default_params()
-gourmex = mount(iris, 'Species', params = params)
+gourmex = mount(c('Sepal.Length', 'Petal.Width'), 'Species', params = params)
 }

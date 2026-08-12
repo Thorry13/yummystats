@@ -1,6 +1,6 @@
-myparams = default_params(grouped=TRUE)
+params = default_params(grouped=TRUE)
 test_that("params reduction works", {
-  params = rbind(myparams$shapes, myparams$shapes) # Introduce double entries
+  params = rbind(params$shapes, params$shapes) # Introduce double entries
   expect_false(check_unicity(params %>% mutate(i=row_number()), var = 'i',  id_cols = c('var_type', 'stat_name')))
   new_params = reduce_params(params)
   expect_true(check_unicity(new_params %>% mutate(i=row_number()), var = 'i', id_cols = c('var_type', 'stat_name')))
@@ -8,7 +8,7 @@ test_that("params reduction works", {
 
 vars = c('gender', 'happy', 'occupation', 'symptoms', 'age')
 df_test = generate_test_data(500)
-gourmex = mount(vars, 'id', 'group', params=myparams) %>%
+gourmex = mount(vars, 'id', 'group', params=params) %>%
   ingest(df_test) %>%
   digest()
 
@@ -48,8 +48,8 @@ test_that("reshaping works", {
 })
 
 test_that("warning throws if no associated stat", {
-  myparams$stats = myparams$stats %>% filter(stat_name != 'p_value')
-  gourmex = mount(vars, 'id', 'group', params=myparams) %>%
+  params$stats = params$stats %>% filter(stat_name != 'p_value')
+  gourmex = mount(vars, 'id', 'group', params=params) %>%
     ingest(df_test) %>%
     digest()
 

@@ -1,8 +1,8 @@
 vars = c('age', 'gender', 'happy', 'symptoms')
-myparams = default_params()
+params = default_params()
 
 test_that("basic mount", {
-  gourmex = mount(vars, 'id', params=myparams)
+  gourmex = mount(vars, 'id', params=params)
   expect_equal(class(gourmex), 'gourmex')
   expect_equal(names(gourmex), c('storage', 'params'))
   expect_equal(gourmex$params$id_cols, 'id')
@@ -15,7 +15,7 @@ test_that("basic mount", {
 # # check reduced params
 # test_that("mount with params",{
 #   vars = c('age', 'gender', 'happy', 'symptoms')
-#   gourmex = mount(vars, 'id', params=myparams)
+#   gourmex = mount(vars, 'id', params=params)
 # })
 
 test_that("mount with groups", {

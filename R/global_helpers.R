@@ -1,4 +1,3 @@
-#' @importFrom rlang .data
 check_unicity = function(df, var, id_cols=NULL, return_exceptions = FALSE, na.rm = F){
   checks = df %>%
     filter(!na.rm | !is.na(.data[[var]])) %>%
@@ -13,7 +12,6 @@ check_unicity = function(df, var, id_cols=NULL, return_exceptions = FALSE, na.rm
 }
 
 
-#' @importFrom rlang .data
 reduce_params = function(params){
   new_params = params %>%
     group_by(var_type, stat_name) %>%
@@ -56,7 +54,7 @@ default_params = function(grouped=FALSE){
     n_avail_group = expr(\(...) stat_n_avail(..., by=c(gourmex$params$group_cols, gourmex$params$strata_cols))),
     n_level_group = expr(\(...) stat_total(..., by=c(var, gourmex$params$group_cols, gourmex$params$strata_cols))),
     p_level_group = expr(\(...) stat_perc(..., numerator_col = 'n_level_group', denominator_col = 'n_avail_group', by=gourmex$params$strata_cols)),
-    p_value = expr(\(...) stat_pvalue(..., by=gourmex$params$group_cols, strata=gourmex$params$strata_cols))
+    p_value = expr(\(...) stat_pvalue(..., by=gourmex$params$group_cols, strata_cols=gourmex$params$strata_cols))
   )
 
 
@@ -79,8 +77,8 @@ default_params = function(grouped=FALSE){
 
   stat_funcs = bind_rows(A,B,C)
   stat_funcs_gp = bind_rows(A_gp,B_gp,C_gp)
-  myparams0 = list('stats'=stat_funcs, 'shapes'=NULL, 'layout'=NULL)
-  myparams = list('stats'=bind_rows(stat_funcs, stat_funcs_gp), 'shapes'=NULL, 'layout'=NULL)
+  params0 = list('stats'=stat_funcs, 'shapes'=NULL, 'layout'=NULL)
+  params = list('stats'=bind_rows(stat_funcs, stat_funcs_gp), 'shapes'=NULL, 'layout'=NULL)
 
 
   #---
@@ -136,8 +134,8 @@ default_params = function(grouped=FALSE){
 
   shapes = bind_rows(A,B,C)
   shapes_gp = bind_rows(A_gp,B_gp,C_gp)
-  myparams0$shapes = shapes
-  myparams$shapes = bind_rows(shapes, shapes_gp)
+  params0$shapes = shapes
+  params$shapes = bind_rows(shapes, shapes_gp)
 
   # ----
   # LAYOUT
@@ -196,16 +194,16 @@ default_params = function(grouped=FALSE){
   full_template = bind_rows(template_cat, template_logic, template_num)
   full_template_group = bind_rows(template_cat_group, template_logic_group, template_num_group)
 
-  myparams0$layout = list()
-  myparams0$layout$template = full_template
+  params0$layout = list()
+  params0$layout$template = full_template
 
-  myparams$layout = list()
-  myparams$layout$template = full_template_group
-  myparams$layout$pivot_sep = '_'
-  myparams$layout$pivot_glue = sprintf('{.pivot}, N={N_group}')
+  params$layout = list()
+  params$layout$template = full_template_group
+  params$layout$pivot_sep = '_'
+  params$layout$pivot_glue = sprintf('{.pivot}, N={N_group}')
 
   if(grouped)
-    return(myparams)
+    return(params)
   else
-    return(myparams0)
+    return(params0)
 }

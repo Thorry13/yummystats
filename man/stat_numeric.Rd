@@ -12,7 +12,7 @@ stat_numeric(gourmex, var, stat_name, suffix = NULL, by = NULL)
 
 \item{var}{A numerical variable name.}
 
-\item{stat_name}{Name used to store the results.}
+\item{stat_name}{Argument left for consistency with others \verb{stat_*} functions.}
 
 \item{suffix}{Used to append a suffix on numerical statistics names.}
 

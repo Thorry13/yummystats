@@ -4,7 +4,7 @@
 \alias{stat_pvalue}
 \title{Extend the statistics with the significance}
 \usage{
-stat_pvalue(gourmex, var, stat_name = "p_value", by = NULL, strata_var = NULL)
+stat_pvalue(gourmex, var, stat_name = "p_value", by = NULL, strata_cols = NULL)
 }
 \arguments{
 \item{gourmex}{A \code{gourmex} object.}
@@ -15,7 +15,7 @@ stat_pvalue(gourmex, var, stat_name = "p_value", by = NULL, strata_var = NULL)
 
 \item{by}{Is used as grouping variables.}
 
-\item{strata_var}{is used to separate multiple comparisons.}
+\item{strata_cols}{is used to separate multiple comparisons.}
 }
 \value{
 A dataframe with the required p-values.

@@ -5,17 +5,17 @@
 \title{Translate terms following a given dictionary.}
 \usage{
 format_categorical(
-  V,
+  x,
   df_dict,
   from = "id",
   to = "label",
-  default = NULL,
-  unmatched = NULL,
+  na_value = NULL,
+  no_match_value = NULL,
   .fn = NULL
 )
 }
 \arguments{
-\item{V}{A character vector containing terms to translate.}
+\item{x}{A character vector containing terms to translate.}
 
 \item{df_dict}{A data frame used as a dictionary (columns=var, rname, label, group).}
 
@@ -23,9 +23,9 @@ format_categorical(
 
 \item{to}{Reference for destination column.}
 
-\item{default}{Default value for NAs. If NULL, keep the original values.}
+\item{na_value}{Default value for NAs. If NULL, keep the original values.}
 
-\item{unmatched}{Default value if no correspondance was found in \emph{df_dict}.
+\item{no_match_value}{Default value if no correspondance was found in \emph{df_dict}.
 If NULL, keep the previous values.}
 
 \item{.fn}{is applied finally on the translated terms.}
@@ -38,6 +38,6 @@ Translate terms following a given dictionary.
 }
 \examples{
 df_dict = tibble::tibble(low=letters, up=LETTERS)
-V = sample(letters, 5, replace=TRUE)
-format_categorical(V, df_dict, from='low', to='up')
+x = sample(letters, 5, replace=TRUE)
+format_categorical(x, df_dict, from='low', to='up')
 }

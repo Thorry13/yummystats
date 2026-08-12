@@ -24,7 +24,7 @@ stat_perc(
 
 \item{denominator_col}{The denominator. If NULL, the sum of the \code{count_col} column is used as \code{total_col}.}
 
-\item{by}{is used as grouping variables.x}
+\item{by}{Is used as grouping variables.}
 }
 \value{
 A dataframe with the required percentages.

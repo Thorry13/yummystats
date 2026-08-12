@@ -1,10 +1,10 @@
 vars = c('gender', 'happy', 'occupation', 'symptoms', 'age')
-myparams_pv = default_params(grouped=TRUE)
-myparams = myparams_pv
-myparams$stats = myparams$stats %>% filter(stat_name != 'p_value')
+params_pv = default_params(grouped=TRUE)
+params = params_pv
+params$stats = params$stats %>% filter(stat_name != 'p_value')
 df_test = generate_test_data(200)
 
-gourmex = mount(vars, id_cols='id', group_cols='group', params = myparams) %>%
+gourmex = mount(vars, id_cols='id', group_cols='group', params = params) %>%
   ingest(df_test) %>%
   digest()
 
@@ -81,7 +81,7 @@ test_that("stat_n_avail and stat_n_miss work", {
 
 test_that("pvalues work", {
   df_test = generate_test_data(200, 'group', c('gender', 'happy', 'occupation'), 5)
-  gourmex = mount(vars, id_cols='id', group_cols='group', params = myparams_pv) %>%
+  gourmex = mount(vars, id_cols='id', group_cols='group', params = params_pv) %>%
     ingest(df_test) %>%
     digest()
 
@@ -112,7 +112,7 @@ test_that("pvalues work", {
 
 
 test_that("pvalues num 2 groups work", {
-  gourmex2 = mount('age', id_cols='id', group_cols='gender', params = myparams_pv) %>%
+  gourmex2 = mount('age', id_cols='id', group_cols='gender', params = params_pv) %>%
     ingest(df_test %>% filter(!is.na(gender))) %>%
     digest()
 
@@ -124,13 +124,13 @@ test_that("pvalues num 2 groups work", {
 
 test_that("good separation for each strata", {
   df_test = generate_test_data(200, c('group', 'location'), c('gender', 'happy', 'occupation', 'symptoms'), 1)
-  gourmex = mount(vars, id_cols='id', group_cols='group', strata_cols='location', params = myparams) %>%
+  gourmex = mount(vars, id_cols='id', group_cols='group', strata_cols='location', params = params) %>%
     ingest(df_test) %>%
     digest()
 
   stratas = df_test %>% filter(!is.na(location)) %>% pull(location) %>% unique()
   for(strata in stratas){
-    gourmex_strata = mount(vars, id_cols='id', group_cols='group', params = myparams) %>%
+    gourmex_strata = mount(vars, id_cols='id', group_cols='group', params = params) %>%
       ingest(df_test %>% filter(location == strata)) %>%
       digest()
 
@@ -146,11 +146,11 @@ test_that("good separation for each strata", {
 test_that("multiple groups work",{
   df_test = generate_test_data(1100, c('group', 'location'), c('gender', 'happy', 'occupation', 'symptoms'), 5)
   expect_warning( # for location
-    gourmexA <- mount(vars, id_cols='id', group_cols=c('group', 'location'), params = myparams_pv) %>%
+    gourmexA <- mount(vars, id_cols='id', group_cols=c('group', 'location'), params = params_pv) %>%
       ingest(df_test) %>%
       digest(),
     'Detected')
-  gourmexB = mount(vars, id_cols='id', group_cols='group_location', params = myparams_pv) %>%
+  gourmexB = mount(vars, id_cols='id', group_cols='group_location', params = params_pv) %>%
     ingest(df_test %>% filter(!is.na(group), !is.na(location)) %>% mutate(group_location = paste0(group, '_', location), .keep='unused')) %>%
     digest()
 
@@ -167,10 +167,10 @@ test_that("multiple groups work",{
 test_that("multiple stratas work", {
   df_test = generate_test_data(500)
   vars2 = setdiff(vars, 'gender')
-  gourmexA = mount(vars2, 'id', group_cols='group', strata_cols = c('gender', 'location'), params=myparams) %>%
+  gourmexA = mount(vars2, 'id', group_cols='group', strata_cols = c('gender', 'location'), params=params) %>%
     ingest(df_test) %>%
     digest()
-  gourmexB = mount(vars2, id_cols='id', group_cols='group', strata_cols='gender_location', params = myparams) %>%
+  gourmexB = mount(vars2, id_cols='id', group_cols='group', strata_cols='gender_location', params=params) %>%
     ingest(df_test %>% filter(!is.na(gender), !is.na(location))  %>%  mutate(gender_location = paste0(gender, '_', location), .keep='unused')) %>%
     digest()
 

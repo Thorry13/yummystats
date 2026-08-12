@@ -4,16 +4,16 @@
 \alias{format_perc}
 \title{Tool to display percentages}
 \usage{
-format_perc(V, precision = 1, digits = 0, sumTo100 = F, add_sign = F)
+format_perc(x, precision = 1, digits = 0, sum_to_100 = F, add_sign = F)
 }
 \arguments{
-\item{V}{A numeric vector with ratios as values.}
+\item{x}{A numeric vector with ratios as values.}
 
-\item{precision}{Imported parameter. Applied on values multiplied by 100.}
+\item{precision}{Passed to \code{round_numbers}. Applied on values multiplied by 100.}
 
-\item{digits}{Imported parameter.}
+\item{digits}{Passed to \code{format_numbers}.}
 
-\item{sumTo100}{If TRUE, apply the best rounding adjustments to assure a sum equal to 100\%.}
+\item{sum_to_100}{If TRUE, apply the best rounding adjustments to assure a sum equal to 100\%.}
 
 \item{add_sign}{If TRUE, basically paste a "\%" sign.}
 }
@@ -24,6 +24,6 @@ A character vector with formatted percentages
 Tool to display percentages
 }
 \examples{
-V = c(0.12,0.346,0.534)
-format_perc(V, digits=1, add_sign=TRUE)
+x = c(0.12,0.346,0.534)
+format_perc(x, digits=1, add_sign=TRUE)
 }

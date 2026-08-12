@@ -1,31 +1,31 @@
 test_that("rounding numbers works", {
-  V = c(3.3,33.3,13.4)
+  x = c(3.3,33.3,13.4)
 
-  expect_equal(round_numbers(V), c(3,33,13))
-  expect_equal(round_numbers(V, precision=10), c(0,30,10))
-  expect_equal(round_numbers(V, total_consistency=T), c(3,33,14))
-  expect_equal(round_numbers(V, precision=5, keep_low_numbers=T), c(3.3,35,15))
-  expect_equal(round_numbers(V, precision=5, keep_low_numbers=T, low_limit=3), c(5,35,15))
+  expect_equal(round_numbers(x), c(3,33,13))
+  expect_equal(round_numbers(x, precision=10), c(0,30,10))
+  expect_equal(round_numbers(x, consistent_total=T), c(3,33,14))
+  expect_equal(round_numbers(x, precision=5, keep_low_numbers=T), c(3.3,35,15))
+  expect_equal(round_numbers(x, precision=5, keep_low_numbers=T, low_limit=3), c(5,35,15))
 })
 
 
 test_that("formatting numbers works",{
-  V = c(7,2600,71.98,9.71,98)
+  x = c(7,2600,71.98,9.71,98)
 
-  expect_equal(format_numbers(V), c('7', '2600', '72', '10', '98'))
-  expect_equal(format_numbers(V, big.mark=',', digits=1), c('7.0', '2,600.0', '72.0', '9.7', '98.0'))
-  expect_equal(format_numbers(V, lower_bound=10), c('<10', '2600', '72', '<10', '98'))
+  expect_equal(format_numbers(x), c('7', '2600', '72', '10', '98'))
+  expect_equal(format_numbers(x, big.mark=',', digits=1), c('7.0', '2,600.0', '72.0', '9.7', '98.0'))
+  expect_equal(format_numbers(x, lower_bound=10), c('<10', '2600', '72', '<10', '98'))
 })
 
 
 test_that("formatting percentages works",{
-  V = c(0.054,0.334,0.1138,0.175,0.0792,0.09,0.154)
+  x = c(0.054,0.334,0.1138,0.175,0.0792,0.09,0.154)
 
-  expect_true(sum(V)==1)
-  expect_false(sum(round_numbers(V, 0.01))==1)
-  expect_equal(format_perc(V), c('5', '33', '11', '18', '8', '9', '15'))
-  expect_equal(format_perc(V, precision=0.1, digits=2, add_sign=TRUE), c('5.40 %', '33.40 %', '11.40 %', '17.50 %', '7.90 %', '9.00 %', '15.40 %'))
-  expect_equal(sum(as.numeric(format_perc(V, sumTo100 = TRUE))), 100)
+  expect_true(sum(x)==1)
+  expect_false(sum(round_numbers(x, 0.01))==1)
+  expect_equal(format_perc(x), c('5', '33', '11', '18', '8', '9', '15'))
+  expect_equal(format_perc(x, precision=0.1, digits=2, add_sign=TRUE), c('5.40 %', '33.40 %', '11.40 %', '17.50 %', '7.90 %', '9.00 %', '15.40 %'))
+  expect_equal(sum(as.numeric(format_perc(x, sum_to_100=TRUE))), 100)
 })
 
 
@@ -37,11 +37,11 @@ test_that("formatting categorical values works",{
 
   expect_equal(format_categorical(countries, df_dict, from="Country", to="Alpha.2.code"),
                c('FR', 'Great Britain', 'MA', 'United States', NA, 'US', 'DE', 'VN', 'AU', 'CA', 'Lao', 'NZ', 'TN'))
-  expect_equal(format_categorical(countries, df_dict, from="Country", to="Alpha.3.code", unmatched='???', default=''),
+  expect_equal(format_categorical(countries, df_dict, from="Country", to="Alpha.3.code", no_match_value='???', na_value=''),
                c('FRA', '???', 'MAR', '???', '', 'USA', 'DEU', 'VNM', 'AUS', 'CAN', '???', 'NZL', 'TUN'))
-  expect_equal(format_categorical(countries, df_dict,  from="Country", to="Alpha.2.code", .fn = \(x) paste0('c:',x), unmatched='??'),
+  expect_equal(format_categorical(countries, df_dict,  from="Country", to="Alpha.2.code", .fn = \(x) paste0('c:',x), no_match_value='??'),
                c('c:FR', 'c:??', 'c:MA', 'c:??', NA, 'c:US', 'c:DE', 'c:VN', 'c:AU', 'c:CA', 'c:??', 'c:NZ', 'c:TN'))
-  expect_equal(format_categorical(countries, df_dict, from="Country", to="Alpha.3.code", default='UNK'),
+  expect_equal(format_categorical(countries, df_dict, from="Country", to="Alpha.3.code", na_value='UNK'),
                c('FRA', 'Great Britain', 'MAR', 'United States', 'UNK', 'USA', 'DEU', 'VNM', 'AUS', 'CAN', 'Lao', 'NZL', 'TUN'))
 
 

@@ -2,26 +2,22 @@
 % Please edit documentation in R/shape_helpers.R
 \name{round_numbers}
 \alias{round_numbers}
-\title{This is an advanced function to round numbers.
-It can apply a "smart rounding" taking all values into account instead of
-considering them independently to make it consistent with the total (e.g. percentages).
-There are optional parameters to keep raw values for low numbers, which might be useful
-in this environment of functions.}
+\title{Round numbers}
 \usage{
 round_numbers(
-  V,
+  x,
   precision = 1,
-  total_consistency = FALSE,
+  consistent_total = FALSE,
   keep_low_numbers = FALSE,
   low_limit = NULL
 )
 }
 \arguments{
-\item{V}{A numeric vector whose values need to be rounded}
+\item{x}{A numeric vector whose values need to be rounded}
 
 \item{precision}{If NULL, no rounding is applied.}
 
-\item{total_consistency}{If TRUE, find the best adjustments to make the sum of rounded values
+\item{consistent_total}{If TRUE, find the best adjustments to make the sum of rounded values
 equal to the rounded sum.}
 
 \item{keep_low_numbers}{If TRUE, avoid rounding low numbers, according to \code{low_limit} argument.}
@@ -40,10 +36,10 @@ There are optional parameters to keep raw values for low numbers, which might be
 in this environment of functions.
 }
 \examples{
-V = c(3.3,33.3,13.4)
-round_numbers(V)
-round_numbers(V, precision=10)
-round_numbers(V, total_consistency=TRUE)
-round_numbers(V, precision=5, keep_low_numbers=TRUE)
-round_numbers(V, precision=5, keep_low_numbers=TRUE, low_limit=3)
+x = c(3.3,33.3,13.4)
+round_numbers(x)
+round_numbers(x, precision=10)
+round_numbers(x, consistent_total=TRUE)
+round_numbers(x, precision=5, keep_low_numbers=TRUE)
+round_numbers(x, precision=5, keep_low_numbers=TRUE, low_limit=3)
 }

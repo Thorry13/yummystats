@@ -13,7 +13,7 @@ stat_n_avail(gourmex, var, stat_name = "n_avail", by = NULL)
 
 \item{stat_name}{indicates how the column reporting the number of available data should be named.}
 
-\item{by}{is used as grouping variables}
+\item{by}{Is used as grouping variables}
 }
 \value{
 A dataframe with the required available values.
